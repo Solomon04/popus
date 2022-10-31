@@ -1,76 +1,72 @@
-import {FunctionComponent} from "react";
+import {FunctionComponent, useState} from "react";
 import Navbar from "@/Components/Navbar";
+import PopupStoreCard from "@/Components/PopupStoreCard";
+import {profile} from "@/static-data";
+import LivePopupStoresSection from "@/Components/Partials/Home/LivePopupStoresSection";
+import PopupExplainerSection from "@/Components/Partials/Home/PopupExplainerSection";
+import Footer from "@/Components/Footer";
+
+const stores = [
+    profile,
+    profile,
+    profile,
+    profile
+]
 
 const Home: FunctionComponent = () => {
-    return (
-        <>
-            <main>
-                <Navbar/>
-                <div className="bg-gray-50 pt-10 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14">
-                    <div className="mx-auto max-w-7xl lg:px-8">
-                        <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-                            <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
-                                <div className="lg:py-24">
-                                    <h1 className="mt-4 text-4xl font-bold tracking-tight text-black sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                                        <span className="block">A better way to</span>
-                                        <span className="block text-indigo-400">ship web apps</span>
-                                    </h1>
-                                    <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                                        Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui Lorem cupidatat commodo. Elit sunt
-                                        amet fugiat veniam occaecat fugiat.
-                                    </p>
-                                    <div className="mt-10 sm:mt-12">
-                                        <form action="#" className="sm:mx-auto sm:max-w-xl lg:mx-0">
-                                            <div className="sm:flex">
-                                                <div className="min-w-0 flex-1">
-                                                    <label htmlFor="email" className="sr-only">
-                                                        Email address
-                                                    </label>
-                                                    <input
-                                                        id="email"
-                                                        type="email"
-                                                        placeholder="Enter your email"
-                                                        className="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2 focus:ring-offset-gray-900"
-                                                    />
-                                                </div>
-                                                <div className="mt-3 sm:mt-0 sm:ml-3">
-                                                    <button
-                                                        type="submit"
-                                                        className="block w-full rounded-md bg-indigo-500 py-3 px-4 font-medium text-white shadow hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2 focus:ring-offset-gray-900"
-                                                    >
-                                                        Start free trial
-                                                    </button>
-                                                </div>
+        const [activeSection, setActiveSection] = useState('player')
+        return (
+            <>
+                <main>
+                    <Navbar/>
+                    <section className="pt-24 pb-12 mx-auto max-w-7xl">
+                        <div className="px-12">
+                            <div className="w-full mx-auto text-left md:w-11/12 xl:w-9/12 md:text-center">
+                                <h1 className="mb-8 text-4xl font-extrabold leading-none tracking-normal text-gray-900 md:text-6xl md:tracking-tight">
+                                    <span>Start a</span> <span
+                                    className="block w-full py-2 text-transparent bg-clip-text leading-12 bg-gradient-to-r from-rose-600 via-orange-400 to-pink-500 lg:inline">fundraiser selling </span>
+                                    <span>delicious gourmet popcorn</span>
+                                </h1>
+                                <p className="px-0 mb-8 text-lg text-gray-600 md:text-xl lg:px-24">
+                                    We help people save time, create opportunities, and make fundraising easy all through
+                                    the power of our gourmet popcorn..
+                                </p>
+                                <div className="mb-4 space-x-0 md:space-x-2 md:mb-8">
+                                    <a href="#_"
+                                       className="inline-flex items-center justify-center w-full px-6 py-3 mb-2 text-lg text-white bg-rose-600 rounded-2xl sm:w-auto sm:mb-0">
+                                        Get Started
+                                    </a>
+                                    <a href="#learn"
+                                       className="inline-flex items-center justify-center w-full px-6 py-3 mb-2 text-lg bg-gray-100 rounded-2xl sm:w-auto sm:mb-0">
+                                        Learn More
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="w-full mx-auto mt-20 text-center md:w-10/12">
+                                <div className="relative z-0 w-full mt-8">
+                                    <div className="relative overflow-hidden shadow-2xl">
+                                        <div
+                                            className="flex items-center flex-none px-4 bg-rose-600 rounded-b-none h-11 rounded-xl">
+                                            <div className="flex space-x-1.5">
+                                                <div className="w-3 h-3 border-2 border-white rounded-full"/>
+                                                <div className="w-3 h-3 border-2 border-white rounded-full"/>
+                                                <div className="w-3 h-3 border-2 border-white rounded-full"/>
                                             </div>
-                                            <p className="mt-3 text-sm text-gray-300 sm:mt-4">
-                                                Start your free 14-day trial, no credit card necessary. By providing your email, you agree to
-                                                our{' '}
-                                                <a href="#" className="font-medium text-white">
-                                                    terms of service
-                                                </a>
-                                                .
-                                            </p>
-                                        </form>
+                                        </div>
+                                        <img src="/images/dashboard-preview.png"/>
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-12 -mb-16 sm:-mb-48 lg:relative lg:m-0">
-                                <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0">
-                                    {/* Illustration taken from Lucid Illustrations: https://lucid.pixsellz.io/ */}
-                                    <img
-                                        className="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                                        src="/images/app-preview.png"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-            </main>
-        </>
-    )
-};
+                        </div>
+                    </section>
+                    <LivePopupStoresSection stores={stores}/>
+                    <PopupExplainerSection/>
+                </main>
+                <Footer/>
+            </>
+        )
+    }
+;
 
 export default Home;

@@ -2,6 +2,7 @@ import {FunctionComponent, useContext, useState} from "react";
 import CartContext from "@/Context/CartContext";
 import _ from "lodash";
 import Slideover from "@/Components/Slideover";
+import {Link} from "@inertiajs/inertia-react";
 
 const Cart: FunctionComponent = () => {
     const [showCartSlideover, setShowCartSlideover] = useState(false);
@@ -91,12 +92,13 @@ const Cart: FunctionComponent = () => {
                                     <p className="mt-0.5 text-sm text-gray-500 mb-4">Shipping and taxes calculated at
                                         checkout.</p>
 
-                                    <a
-                                        href="#"
+                                    <Link
+                                        href="/checkout"
                                         className="w-full flex items-center justify-center rounded-md border border-transparent bg-blue-400 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-500"
+                                        preserveState
                                     >
                                         Checkout
-                                    </a>
+                                    </Link>
                                 </div>
 
                             </div>

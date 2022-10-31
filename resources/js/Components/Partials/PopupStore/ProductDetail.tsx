@@ -5,9 +5,10 @@ import CartContext from "@/Context/CartContext";
 
 type Props = {
     product: any
+    onSelectedProduct: any
 }
 
-const ProductDetail: FunctionComponent<Props> = ({product}) => {
+const ProductDetail: FunctionComponent<Props> = ({product, onSelectedProduct}) => {
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedVariant, setSelectedVariant] = useState(product.variants[2])
 
@@ -15,10 +16,10 @@ const ProductDetail: FunctionComponent<Props> = ({product}) => {
 
     const addToCart = (p: any) => {
         p.selectedVariant = selectedVariant
-        console.log(p)
         if (add) {
             add(p)
         }
+        onSelectedProduct()
     }
 
     return (

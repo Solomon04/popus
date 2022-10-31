@@ -1,7 +1,7 @@
 import {FunctionComponent, useState} from "react";
 import Modal from "@/Components/Modal";
 import {RadioGroup} from "@headlessui/react";
-import ProductDetail from "@/Components/Partials/Popup/ProductDetail";
+import ProductDetail from "@/Components/Partials/PopupStore/ProductDetail";
 
 type Props = {
     products: any[]
@@ -53,7 +53,7 @@ const ProductList: FunctionComponent<Props> = ({products}) => {
             {
                 selectedProduct ? (
                     <Modal open={showProductModal} setOpen={closeProductModal}>
-                       <ProductDetail product={selectedProduct}/>
+                       <ProductDetail product={selectedProduct} onSelectedProduct={closeProductModal}/>
                     </Modal>
                 ): null
             }

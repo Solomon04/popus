@@ -1,8 +1,10 @@
 import {FunctionComponent} from "react";
 import Navbar from "@/Components/Navbar";
 import { CalendarIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import {Link} from "@inertiajs/inertia-react";
+import {ShoppingCartIcon, UserGroupIcon} from "@heroicons/react/24/solid";
 
-const positions = [
+const fundraisers = [
     {
         id: 1,
         title: 'John Marshall Basketball',
@@ -35,6 +37,8 @@ const positions = [
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
             },
         ],
+        total: 2300,
+        goal: 4000
     },
     {
         id: 2,
@@ -62,6 +66,8 @@ const positions = [
                     'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
             },
         ],
+        total: 1653,
+        goal: 2500
     },
     {
         id: 3,
@@ -89,17 +95,19 @@ const positions = [
                     'https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
             },
         ],
+        total: 1234,
+        goal: 3000
     },
 ]
 
 const Dashboard: FunctionComponent = () => {
     return (
         <>
-            <main className="bg-gray-50 min-h-screen">
+            <main className="bg-rose-50 min-h-screen">
                 {/* Nav */}
                 <Navbar/>
                 <div className="max-w-6xl mx-auto py-8">
-                    <div className="py-16 md:flex md:items-start md:justify-between">
+                    <div className="pt-16 pb-8 md:flex md:items-start md:justify-between border-b border-gray-300">
                         <div className="min-w-0 flex-1">
                             <h2 className="text-4xl font-extrabold leading-10">
                                 Hi, D'Angelo!
@@ -114,49 +122,51 @@ const Dashboard: FunctionComponent = () => {
                             </button>
                         </div>
                     </div>
-
-                    <div className="overflow-hidden bg-white shadow sm:rounded-md">
-                        <ul role="list" className="divide-y divide-gray-200">
-                            {positions.map((position) => (
-                                <li key={position.id}>
-                                    <a href="#" className="block hover:bg-gray-50">
-                                        <div className="flex items-center px-4 py-4 sm:px-6">
-                                            <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                                <div className="truncate">
-                                                    <div className="flex text-sm">
-                                                        <p className="truncate font-medium text-indigo-600">{position.title}</p>
-                                                        <p className="ml-1 flex-shrink-0 font-normal text-gray-500">in {position.department}</p>
-                                                    </div>
-                                                    <div className="mt-2 flex">
-                                                        <div className="flex items-center text-sm text-gray-500">
-                                                            <CalendarIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                                                            <p>
-                                                                Ending on <time dateTime={position.closeDate}>{position.closeDateFull}</time>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                                                    <div className="flex -space-x-1 overflow-hidden">
-                                                        {position.applicants.map((applicant) => (
-                                                            <img
-                                                                key={applicant.email}
-                                                                className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
-                                                                src={applicant.imageUrl}
-                                                                alt={applicant.name}
-                                                            />
-                                                        ))}
-                                                    </div>
+                    <div className="grid lg:grid-cols-3 gap-12 mt-5">
+                        {
+                            fundraisers.map(fundraiser => (
+                                <Link href="/fundraiser" className="block rounded-lg bg-white shadow-lg shadow-rose-100 transform hover:scale-110 transition ease-in-out delay-150">
+                                    <img alt="Home" src="/images/popcorn-background.jpg" className="h-56 w-full rounded-t-md object-cover" />
+                                    <div className="mt-2 p-2">
+                                        <dl>
+                                            <div>
+                                                <dt className="sr-only">Progress</dt>
+                                                <dd className="text-sm text-gray-500">
+                                                    Raised <strong>${fundraiser.total}</strong> of <strong>${fundraiser.goal}</strong>
+                                                </dd>
+                                            </div>
+                                            <div>
+                                                <dt className="sr-only">Name</dt>
+                                                <dd className="font-semibold text-lg">{fundraiser.title}</dd>
+                                            </div>
+                                        </dl>
+                                        <div className="mt-4 space-y-3 text-sm">
+                                            <div className="flex sm:shrink-0 sm:items-center">
+                                                <ShoppingCartIcon className="h-4 w-4 text-rose-600"/>
+                                                <div className="mt-1.5 sm:ml-3 sm:mt-0">
+                                                    <p className="text-gray-500"># of Orders</p>
+                                                    <p className="font-medium">12 orders</p>
                                                 </div>
                                             </div>
-                                            <div className="ml-5 flex-shrink-0">
-                                                <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            <div className="flex sm:shrink-0 sm:items-center">
+                                                <UserGroupIcon className="h-4 w-4 text-rose-600"/>
+                                                <div className="mt-1.5 sm:ml-3 sm:mt-0">
+                                                    <p className="text-gray-500"># of Participants</p>
+                                                    <p className="font-medium">10 participants</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex sm:shrink-0 sm:items-center">
+                                                <UserGroupIcon className="h-4 w-4 text-rose-600"/>
+                                                <div className="mt-1.5 sm:ml-3 sm:mt-0">
+                                                    <p className="text-gray-500">End Date</p>
+                                                    <p className="font-medium">{fundraiser.closeDateFull}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
+                                    </div>
+                                </Link>
+                            ))
+                        }
                     </div>
                 </div>
             </main>

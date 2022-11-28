@@ -14,7 +14,7 @@ const stores = [
 ]
 
 const Home: FunctionComponent = () => {
-        const [activeSection, setActiveSection] = useState('player')
+        // stats, feed,
         return (
             <>
                 <main>

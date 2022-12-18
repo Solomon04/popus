@@ -1,0 +1,47 @@
+[
+    {
+        "first_name": "Matthew",
+        "last_name": "Hurt",
+        "image": "images/faker/mahurt.jpeg"
+    },
+    {
+        "first_name": "Michael",
+        "last_name": "Hurt",
+        "image": "images/faker/mihurt.png"
+    },
+    {
+        "first_name": "Dedoch",
+        "last_name": "Chan",
+        "image": "images/faker/dchan.png"
+    },
+    {
+        "first_name": "Isaiah",
+        "last_name": "Walden",
+        "image": "images/faker/iwalden.jpeg"
+    },
+    {
+        "first_name": "Ray",
+        "last_name": "Adams",
+        "image": "images/faker/radams.jpeg"
+    },
+    {
+        "first_name": "DAngelo",
+        "last_name": "Tines",
+        "image": "images/faker/dtines.webp"
+    },
+    {
+        "first_name": "Emerson",
+        "last_name": "Gonyea",
+        "image": "images/faker/emerson.jpeg"
+    },
+    {
+        "first_name": "Eric",
+        "last_name": "Stai",
+        "image": "images/faker/estai.jpeg"
+    },
+    {
+        "first_name": "Solomon",
+        "last_name": "Antoine",
+        "image": "images/faker/santoine.jpeg"
+    }
+]

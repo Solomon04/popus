@@ -1,0 +1,23 @@
+{
+  "tabWidth": 2,
+  "bracketSpacing": true,
+  "jsxBracketSameLine": true,
+  "bracketSameLine": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "arrowParens": "always",
+  "jsxSingleQuote": true,
+  "semi": false,
+  "importOrder": [
+    "^react(.*)$",
+    "^@/Components/(.*)$",
+    "^@/Hooks/(.*)$",
+    "^@/Layouts/(.*)$",
+    "^@/Pages/(.*)$",
+    "^@/Utils/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true
+}

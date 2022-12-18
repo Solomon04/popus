@@ -1,46 +1,59 @@
-import {FunctionComponent, PropsWithChildren, useState} from "react";
-import _ from "lodash";
-import CartContext, {CartContextProps} from "@/Context/CartContext";
+import CartContext, { CartContextProps } from '@/Context/CartContext'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 import Cookies from 'js-cookie'
-import Navbar from "@/Components/Navbar";
+import _ from 'lodash'
 
-const PopupStoreLayout: FunctionComponent<PropsWithChildren> = ({children}) => {
-    const [cartItems, setCartItems] = useState<any[]>([]);
+import { FunctionComponent, PropsWithChildren, useState } from 'react'
 
-    const remove = (priceID: string) => {
-        let i = _.reject(cartItems, function (item: any) {
-            return item.id === priceID;
-        });
-        setCartItems(i)
-        Cookies.set('items', JSON.stringify(i))
-    }
+import Footer from '@/Components/Footer'
+import Navbar from '@/Components/Navbar'
 
-    const add = (product: any) => {
-        let i = _.union(cartItems, [product]);
-        setCartItems(i)
-        Cookies.set('items', JSON.stringify(i))
-    }
+// const stripePromise = loadStripe('pk_test_Jp3kv7BJibBz4ANCtbTISq6q00V7NZXMcQ')
 
-    const get = () => {
-        return JSON.parse(Cookies.get('items') as string);
-    }
+const PopupStoreLayout: FunctionComponent<PropsWithChildren> = ({
+  children,
+}) => {
+  const [cartItems, setCartItems] = useState<any[]>([])
 
-    const cartContext: CartContextProps = {
-        items: get(),
-        add: add,
-        remove: remove
-    }
+  const remove = (priceID: string) => {
+    let i = _.reject(cartItems, function (item: any) {
+      return item.id === priceID
+    })
+    setCartItems(i)
+    Cookies.set('items', JSON.stringify(i))
+  }
 
-    return (
-        <CartContext.Provider value={cartContext}>
-            <main>
-                {/* Nav */}
-                <Navbar/>
-                {/*Body*/}
-                {children}
-            </main>
-        </CartContext.Provider>
-    );
-};
+  const add = (product: any) => {
+    let i = _.union(cartItems, [product])
+    setCartItems(i)
+    Cookies.set('items', JSON.stringify(i))
+  }
 
-export default PopupStoreLayout;
+  const get = () => {
+    return JSON.parse(Cookies.get('items') as string)
+  }
+
+  const cartContext: CartContextProps = {
+    items: get(),
+    add: add,
+    remove: remove,
+  }
+
+  return (
+    <CartContext.Provider value={cartContext}>
+      {/*<Elements stripe={stripePromise}>*/}
+      <main>
+        {/* Nav */}
+        <Navbar />
+        {/*Body*/}
+        {children}
+        {/*  Footer*/}
+        <Footer />
+      </main>
+      {/*</Elements>*/}
+    </CartContext.Provider>
+  )
+}
+
+export default PopupStoreLayout

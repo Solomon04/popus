@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'stripe' => [
+        'public' => env('STRIPE_PUBLISHABLE', ''),
+        'secret' => env('STRIPE_SECRET', ''),
+        'dashboard' => env('STRIPE_DASHBOARD_URL', 'https://dashboard.stripe.com'),
+    ],
+
 ];

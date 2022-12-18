@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+### Lint frontend code
+npm run lint:check
+
+### Analyze backend code
+./vendor/bin/phpstan analyse --memory-limit=2G
+
+### Lint backend code
+./vendor/bin/pint --test

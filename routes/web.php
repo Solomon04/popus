@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 /*
@@ -19,26 +21,35 @@ use Inertia\Inertia;
 //    return Inertia::render('Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::inertia('store', 'Popup/Store');
-Route::inertia('/', 'Home');
+// Store model: user_id,
+// Fundraiser model: user_id,
+// Product:
+// Customer:
+
+Route::get('store', function () {
+    $products = \App\Models\Product::active()->take(6)->get();
+    return Inertia::render('Popup/Store', [
+        'products' => $products
+    ]);
+})->name('popup.store');
+
+Route::get('/', function (){
+    return Inertia::render('Home', [
+        'stores' => null
+    ]);
+})->name('home');
 Route::inertia('/fundraiser', 'Organizer/FundraiserDetail');
 Route::inertia('/dashboard', 'Organizer/Dashboard');
 Route::inertia('/checkout', 'Popup/Checkout');
 Route::inertia('/summary', 'Popup/Summary');
 
-Route::post('/checkout', function (\Illuminate\Http\Request $request){
-   $data = [
-       'email' => $request->get('email'),
-       'phone' => $request->get('phone'),
-       'first_name' => $request->get('first_name'),
-       'last_name' => $request->get('last_name'),
-       'address_line_one' => $request->get('address_line_one'),
-       'address_line_two' => $request->get('address_line_two'),
-       'city' => $request->get('city'),
-       'state' => $request->get('state'),
-       'country' => $request->get('country'),
-       'postal_code' => $request->get('postal_code'),
-   ];
+Route::post('checkout', [OrderController::class, 'store'])->name('checkout');
+Route::get('get-started', function (){
+    return Inertia::render('GetStarted');
+})->name('get.started');
+
+Route::middleware(['verified', 'auth'])->group(function (){
+
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

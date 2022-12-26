@@ -37,12 +37,13 @@ class UpdateProductsCommand extends Command
             $variant = $shopifyProduct->getVariants()->firstOrFail();
 
             $product = Product::updateOrCreate(['shopify_product_id' => $attributes['id']], [
-                'shopify_product_id' => $attributes['id'],
+                'shopify_product_id' => $variant['id'],
                 'title' => $attributes['title'],
                 'price' => $variant['price'],
                 'image' => $attributes['image']['src'] ?? '',
                 'active' => $attributes['status'] === 'active',
                 'description' => $attributes['body_html'],
+                'weight' => $variant['weight']
             ]);
 
             $this->comment('Uploaded / Updated ' . $product->title);

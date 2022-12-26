@@ -26,13 +26,15 @@ class StoreOrderRequest extends FormRequest
         return [
             'email' => ['required', 'email'],
             'phone' => ['required', 'string'],
-            'name' => ['required', 'string'],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
             'address' => ['required', 'string'],
             'unit' => ['required', 'string'],
             'city' => ['required', 'string'],
             'state' => ['required', 'string'],
-            'postal' => ['required', 'postal:US'],
-            'token' => ['required', 'string'],
+            'postal' => ['required'],
+            'stripe_token' => ['required', 'string'],
+            'rate' => ['required', 'string']
         ];
     }
 }

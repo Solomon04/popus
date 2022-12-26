@@ -6,29 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Address extends Model
+class Rate extends Model
 {
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $fillable = [
-        'address',
-        'unit',
-        'city',
-        'state',
-        'postal',
-        'cart_id'
+        'cart_id',
+        'shippo_id',
+        'provider',
+        'name',
+        'amount',
+        'days',
+        'image',
+        'description',
+        'tracking_number'
     ];
 
-    /**
-     * An address belongs to a cart
-     *
-     * @return BelongsTo
-     */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);

@@ -33,9 +33,11 @@ import PopupStoreCard from '@/Components/PopupStoreCard'
 
 import AppLayout from '@/Layouts/AppLayout'
 
-const stores = [profile, profile2, profile3, profile4, profile5, profile6]
+type Props = {
+  stores: App.Models.Store[]
+}
 
-const Home: FunctionComponent = () => {
+const Home: FunctionComponent<Props> = ({ stores }) => {
   // stats, feed,
   return (
     <AppLayout>

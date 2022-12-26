@@ -15,14 +15,17 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->uuid();
             $table->foreignId('cart_id')->constrained('carts');
             $table->foreignId('customer_id')->constrained('customers');
             $table->foreignId('store_id')->constrained('stores');
-            $table->string('shopify_order_id');
-            $table->integer('sub_total');
-            $table->integer('shipping_total');
-            $table->integer('total');
-            // stripe payment?
+            $table->text('status');
+            $table->string('shopify_order_id')->nullable();
+            $table->string('stripe_payment_id')->nullable();
+            $table->double('sub_total', 8, 2);
+            $table->double('shipping_total', 8, 2);
+            $table->double('tax_total', 8, 2);
+            $table->double('total', 8, 2);
             $table->timestamps();
         });
     }

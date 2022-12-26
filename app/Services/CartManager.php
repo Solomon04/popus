@@ -1,37 +1,45 @@
 <?php
 
 
-namespace App\Services\Commerce;
+namespace App\Services;
 
 
 use App\Contracts\Commerce\CartManagerContract;
 use App\Models\Cart;
 use App\Models\CartItem;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Session\Store;
-use Illuminate\Support\Collection;
 
 class CartManager
 {
-
-    public function __construct(protected Store $sessionStore)
+    /**
+     * CartManager constructor.
+     * @param Store $sessionStore
+     * @param Cart $cart
+     */
+    public function __construct(public Store $sessionStore, public Cart $cart)
     {
-        $this->sessionStore = $sessionStore;
     }
-
 
     /**
      * Get the current session cart
      *
-     * @return Collection
+     * @return Cart
      */
-    public function getCart(): Collection
+    public function getCart(): Cart
     {
-        if (! $this->sessionStore->get('cart') instanceof Collection) {
-            $this->sessionStore->put('cart', collect());
+        $cart = Cart::with('items.product', 'store.user', 'address', 'customer')->where([
+            'session_id' => $this->sessionStore->getId(),
+            'active' => true
+        ])->first();
+
+        if (null === $cart) {
+            $this->sessionStore->regenerateToken();
+            return $this->cart->create(['session_id' => $this->sessionStore->getId()])->load('items');
         }
 
-        return $this->sessionStore->get('cart');
+        return $cart;
     }
 
     /**
@@ -41,7 +49,8 @@ class CartManager
      */
     public function isEmpty(): bool
     {
-        return $this->getCart()->isEmpty();
+        $cart = $this->getCart();
+        return $cart->items()->count() === 0;
     }
 
     /**
@@ -51,16 +60,18 @@ class CartManager
      */
     public function isNotEmpty(): bool
     {
-        return $this->getCart()->isNotEmpty();
+        $cart = $this->getCart();
+        return $cart->items()->count() === 0;
     }
 
 
     /**
      * Completely destroys the cart: removes all related models (cart, item, etc) from the DB
      */
-    public function clear(): void
+    public function destroy(): void
     {
-        $this->sessionStore->remove('cart');
+        $cart = $this->getCart();
+        $cart->forceDelete();
     }
 
     /**
@@ -69,14 +80,16 @@ class CartManager
      * @param int $id
      * @param int $qty
      *
-     * @return  Returns the item object that has been created (or updated)
+     * @return CartItem Returns the item object that has been created (or updated)
      */
-    public function addItem(int $id, int $qty = 1)
+    public function addItem(int $id, int $qty = 1): CartItem
     {
         $cart = $this->getCart();
-        $cart->push($id);
 
-        return $this->sessionStore->push('cart');
+        return $cart->items()->updateOrCreate([
+            'product_id' => $id,
+            'quantity' => $qty
+        ]);
     }
 
     /**

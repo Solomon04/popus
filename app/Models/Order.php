@@ -2,13 +2,29 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
     use HasFactory;
+
+    /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->uuid = Str::uuid();
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -17,24 +33,24 @@ class Order extends Model
      */
     protected $fillable = [
         'cart_id',
+        'uuid',
         'shopify_order_id',
         'stripe_payment_id',
         'customer_id',
         'store_id',
         'sub_total',
         'shipping_total',
-        'total'
+        'tax_total',
+        'total',
+        'status'
     ];
 
     /**
-     * An order belongs to a customer
+     * The attributes that should be cast.
      *
-     * @return BelongsTo
+     * @var array
      */
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
-    }
+    protected $casts = ['status' => OrderStatus::class];
 
     /**
      * An order has a single cart
@@ -56,24 +72,13 @@ class Order extends Model
         return $this->belongsTo(Store::class);
     }
 
-    /**
-     * Convert the amount as cents to dollars
-     *
-     * @param $price
-     * @return float|int
-     */
-    public function getTotalAttribute($price)
+    public function payment(): HasOne
     {
-        return $price / 100;
+        return $this->hasOne(Payment::class);
     }
 
-    /**
-     * Set the amount as cents from dollars
-     *
-     * @param $price
-     */
-    public function setTotalAttribute($price)
+    public function customer(): BelongsTo
     {
-        $this->attributes['total'] = $price * 100;
+        return $this->belongsTo(Customer::class);
     }
 }

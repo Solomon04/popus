@@ -18,8 +18,6 @@ class Customer extends Model
     protected $fillable = [
         'name',
         'email',
-        'stripe_customer_id',
-        'shopify_customer_id',
         'phone',
     ];
 

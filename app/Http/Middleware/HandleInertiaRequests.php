@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\CartManager;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -34,10 +35,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
+        /** @var CartManager $cartManager */
+        $cartManager = app()->make(CartManager::class);
+
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-                // cart
+            ],
+            'cart' => $cartManager->getCart(),
+            'flash' => [
+                'message' => fn () => $request->session()->get('message')
             ],
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [

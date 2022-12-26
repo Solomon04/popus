@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Shippo;
 use Signifly\Shopify\Shopify;
 use Stripe\StripeClient;
 
@@ -37,5 +38,7 @@ class AppServiceProvider extends ServiceProvider
             StripeClient::class,
             fn () => new StripeClient(config('services.stripe.secret'))
         );
+
+        Shippo::setApiKey(config('shippo.key'));
     }
 }

@@ -75,4 +75,64 @@ class Cart extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function paymentMethod(): HasOne
+    {
+        return $this->hasOne(PaymentMethod::class);
+    }
+
+    public function rate(): HasOne
+    {
+        return $this->hasOne(Rate::class);
+    }
+
+    /**
+     * Returns true if the cart is not empty (contains items)
+     *
+     * @return bool
+     */
+    public function isNotEmpty(): bool
+    {
+        return $this->items()->count() === 0;
+    }
+
+    /**
+     * Scope a query to only include users of a given type.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  mixed  $type
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCurrentCart($query, $sessionId, $storeId)
+    {
+        return $query->where('store_id', $storeId)
+            ->where('session_id', $sessionId)
+            ->where('active', true);
+    }
+
+    /**
+     * Add an item to the cart (or adds the quantity if the product is already in the cart)
+     *
+     * @param int $id
+     * @param int $qty
+     *
+     * @return CartItem Returns the item object that has been created (or updated)
+     */
+    public function addItem(int $id, int $qty = 1): CartItem
+    {
+        return $this->items()->updateOrCreate([
+            'product_id' => $id,
+            'quantity' => $qty
+        ]);
+    }
+
+    /**
+     * Removes an item from the cart
+     *
+     * @param int $id
+     */
+    public function removeItem(int $id): void
+    {
+        $this->items()->where('product_id', '=', $id)->delete();
+    }
+
 }

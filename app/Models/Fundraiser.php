@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Fundraiser extends Model
@@ -69,6 +70,18 @@ class Fundraiser extends Model
         return $this->belongsTo(User::class, 'organizer_id');
     }
 
+
+    /**
+     * A fundraiser has many popup stores.
+     *
+     * @return HasMany
+     */
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
+    }
+
+
     /**
      * Convert the goal as cents to dollars (Stripe requires cents)
      *
@@ -106,5 +119,15 @@ class Fundraiser extends Model
         }else {
             return FundraiserStatus::UPCOMING;
         }
+    }
+
+    /**
+     * @return Store[]|\Illuminate\Database\Eloquent\Collection|mixed
+     */
+    public function getLeaderboardAttribute()
+    {
+        return $this->stores->load('user')->sortByDesc(function (Store $store){
+            return $store->progress['current'];
+        })->values();
     }
 }

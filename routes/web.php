@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Models\Cart;
+use App\Models\CartItem;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -17,33 +21,26 @@ use Inertia\Inertia;
 |
 */
 
-//Route::get('/dashboard', function () {
-//    return Inertia::render('Dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard');
-
-// Store model: user_id,
-// Fundraiser model: user_id,
-// Product:
-// Customer:
-
-Route::get('store', function () {
-    $products = \App\Models\Product::active()->take(6)->get();
-    return Inertia::render('Popup/Store', [
-        'products' => $products
-    ]);
-})->name('popup.store');
-
 Route::get('/', function (){
+    $stores = \App\Models\Store::with(['user', 'fundraiser'])->inRandomOrder()->take(6)->get();
     return Inertia::render('Home', [
-        'stores' => null
+        'stores' => $stores
     ]);
 })->name('home');
 Route::inertia('/fundraiser', 'Organizer/FundraiserDetail');
 Route::inertia('/dashboard', 'Organizer/Dashboard');
-Route::inertia('/checkout', 'Popup/Checkout');
 Route::inertia('/summary', 'Popup/Summary');
 
-Route::post('checkout', [OrderController::class, 'store'])->name('checkout');
+Route::get('s/{store:uuid}', [\App\Http\Controllers\PopupStoreController::class, 'show'])->name('popup.store');
+Route::get('s/{store:uuid}/checkout', [CheckoutController::class, 'show'])->name('show.checkout');
+Route::post('s/{store:uuid}/checkout', [CheckoutController::class, 'store'])->name('store.checkout');
+Route::post('s/{store:uuid}/order', [OrderController::class, 'store'])->name('submit.order');
+Route::get('s/{store:uuid}/order/{order:uuid}', [OrderController::class, 'show'])->name('show.order');
+
+Route::post('s/{store:uuid}/cart', [CartController::class, 'store'])->name('add.to.cart');
+Route::patch('s/{store:uuid}/cart', [CartController::class, 'delete'])->name('remove.from.cart');
+
+//Route::post('checkout', [OrderController::class, 'store'])->name('checkout');
 Route::get('get-started', function (){
     return Inertia::render('GetStarted');
 })->name('get.started');

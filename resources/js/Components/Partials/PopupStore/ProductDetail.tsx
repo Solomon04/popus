@@ -6,23 +6,34 @@ import { FunctionComponent, useContext, useState } from 'react'
 
 type Props = {
   product: App.Models.Product
-  onSelectedProduct: any
+  onSelectedQuantity: (quantity: number) => void
 }
+
+const sizes = [
+  {
+    label: '2 Pack',
+    value: 2,
+  },
+  {
+    label: '3 Pack',
+    value: 3,
+  },
+  {
+    label: '6 Pack',
+    value: 6,
+  },
+]
 
 const ProductDetail: FunctionComponent<Props> = ({
   product,
-  onSelectedProduct,
+  onSelectedQuantity,
 }) => {
-  // const [selectedVariant, setSelectedVariant] = useState(product.variants[2])
-
-  const { add } = useContext(CartContext)
-
-  const addToCart = (p: App.Models.Product) => {
-    // p.selectedVariant = selectedVariant
-    if (add) {
-      add(p)
-    }
-    onSelectedProduct()
+  const [selectedSize, setSelectedSize] = useState(sizes[0])
+  const addToCart = () => {
+    // if (add) {
+    //   // add(product, selectedSize.value)
+    // }
+    onSelectedQuantity(selectedSize.value)
   }
 
   return (
@@ -63,70 +74,68 @@ const ProductDetail: FunctionComponent<Props> = ({
           <div>
             {/* Sizes */}
             <div className='mt-10'>
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center justify-between mb-3'>
                 <h4 className='text-sm font-medium text-gray-900'>Size</h4>
-                {/*<a*/}
-                {/*  href='#'*/}
-                {/*  className='text-sm font-medium text-indigo-600 hover:text-indigo-500'>*/}
-                {/*  Ingredients*/}
-                {/*</a>*/}
               </div>
 
-              {/*<RadioGroup value={selectedVariant} onChange={setSelectedVariant} className="mt-4">*/}
-              {/*    <RadioGroup.Label className="sr-only"> Choose a size </RadioGroup.Label>*/}
-              {/*    <div className="grid grid-cols-3 gap-4">*/}
-              {/*        {product.variants.map((variant: any) => (*/}
-              {/*            <RadioGroup.Option*/}
-              {/*                key={variant.name}*/}
-              {/*                value={variant}*/}
-              {/*                disabled={!variant.inStock}*/}
-              {/*                className={({ active }) =>*/}
-              {/*                    classNames(*/}
-              {/*                        variant.inStock*/}
-              {/*                            ? 'bg-white shadow-sm text-gray-900 cursor-pointer'*/}
-              {/*                            : 'bg-gray-50 text-gray-200 cursor-not-allowed',*/}
-              {/*                        active ? 'ring-2 ring-indigo-500' : '',*/}
-              {/*                        'group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium hover:bg-gray-50 focus:outline-none sm:flex-1'*/}
-              {/*                    )*/}
-              {/*                }*/}
-              {/*            >*/}
-              {/*                {({ active, checked }) => (*/}
-              {/*                    <>*/}
-              {/*                        <RadioGroup.Label as="span">{variant.name}</RadioGroup.Label>*/}
-              {/*                        {variant.inStock ? (*/}
-              {/*                            <span*/}
-              {/*                                className={classNames(*/}
-              {/*                                    active ? 'border' : 'border-2',*/}
-              {/*                                    checked ? 'border-indigo-500' : 'border-transparent',*/}
-              {/*                                    'pointer-events-none absolute -inset-px rounded-md'*/}
-              {/*                                )}*/}
-              {/*                                aria-hidden="true"*/}
-              {/*                            />*/}
-              {/*                        ) : (*/}
-              {/*                            <span*/}
-              {/*                                aria-hidden="true"*/}
-              {/*                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"*/}
-              {/*                            >*/}
-              {/*                <svg*/}
-              {/*                    className="absolute inset-0 h-full w-full stroke-2 text-gray-200"*/}
-              {/*                    viewBox="0 0 100 100"*/}
-              {/*                    preserveAspectRatio="none"*/}
-              {/*                    stroke="currentColor"*/}
-              {/*                >*/}
-              {/*                  <line x1={0} y1={100} x2={100} y2={0} vectorEffect="non-scaling-stroke" />*/}
-              {/*                </svg>*/}
-              {/*              </span>*/}
-              {/*                        )}*/}
-              {/*                    </>*/}
-              {/*                )}*/}
-              {/*            </RadioGroup.Option>*/}
-              {/*        ))}*/}
-              {/*    </div>*/}
-              {/*</RadioGroup>*/}
+              <RadioGroup value={selectedSize} onChange={setSelectedSize}>
+                <RadioGroup.Label className='sr-only'>
+                  {' '}
+                  Product size{' '}
+                </RadioGroup.Label>
+                <div className='space-y-4'>
+                  {sizes.map((quantity) => (
+                    <RadioGroup.Option
+                      key={quantity.label}
+                      value={quantity}
+                      className={({ checked, active }) =>
+                        classNames(
+                          checked ? 'border-transparent' : 'border-gray-300',
+                          active ? 'border-gray-900 ring-2 ring-gray-900' : '',
+                          'relative block cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between'
+                        )
+                      }>
+                      {({ active, checked }) => (
+                        <>
+                          <span className='flex items-center'>
+                            <span className='flex flex-col text-sm'>
+                              <RadioGroup.Label
+                                as='span'
+                                className='font-medium text-gray-900'>
+                                {quantity.label}
+                              </RadioGroup.Label>
+                            </span>
+                          </span>
+                          <RadioGroup.Description
+                            as='span'
+                            className='mt-2 flex text-sm sm:mt-0 sm:ml-4 sm:flex-col sm:text-right'>
+                            <span className='font-medium text-gray-900'>
+                              $
+                              {Number(quantity.value * product.price).toFixed(
+                                2
+                              )}
+                            </span>
+                          </RadioGroup.Description>
+                          <span
+                            className={classNames(
+                              active ? 'border' : 'border-2',
+                              checked
+                                ? 'border-gray-900'
+                                : 'border-transparent',
+                              'pointer-events-none absolute -inset-px rounded-lg'
+                            )}
+                            aria-hidden='true'
+                          />
+                        </>
+                      )}
+                    </RadioGroup.Option>
+                  ))}
+                </div>
+              </RadioGroup>
             </div>
 
             <button
-              onClick={(e) => addToCart(product)}
+              onClick={addToCart}
               className='mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-900 py-3 px-8 text-base font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'>
               Add to bag
             </button>

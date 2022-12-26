@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('shopify_product_id');
-            $table->string('title');
-            $table->mediumText('description');
-            $table->double('price', 8, 2);
-            $table->double('weight', 8, 2);
-            $table->string('image');
-            $table->boolean('active')->default(false);
+            $table->foreignId('order_id')->constrained('orders');
+            $table->string('stripe_payment_id');
+            $table->integer('stripe_price');
+            $table->string('stripe_status');
+            $table->string('stripe_refund_id')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('payments');
     }
 };

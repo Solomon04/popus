@@ -1,5 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Link } from '@inertiajs/inertia-react'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import 'slick-carousel/slick/slick-theme.css'
 import 'slick-carousel/slick/slick.css'
 import route from 'ziggy-js'
@@ -11,8 +13,10 @@ import Slider from 'react-slick'
 import Button from '@/Components/Form/Button'
 import PopupStoreCard from '@/Components/PopupStoreCard'
 
+dayjs.extend(relativeTime)
+
 type Props = {
-  stores: any[]
+  stores: App.Models.Store[]
 }
 
 const LivePopupStoresSection: FunctionComponent<Props> = ({ stores }) => {
@@ -73,43 +77,39 @@ const LivePopupStoresSection: FunctionComponent<Props> = ({ stores }) => {
 
           {/*@ts-ignore*/}
           <Slider {...settings} ref={sliderRef}>
-            {/*<div className='grid grid-cols-4 gap-8 max-w-6xl mt-5'>*/}
-            {/*  */}
-            {/*</div>*/}
-            {stores.map((store, index) => (
-              <Link href={`/store`} key={index}>
+            {stores.map((store) => (
+              <Link href={route('popup.store', [store.uuid])} key={store.uuid}>
                 <div className='w-64 mx-auto border-2 bg-white rounded-md shadow-xl'>
-                  {/*<div className='flex items-center justify-between'>*/}
-                  {/*  <p className='text-gray-400 text-sm'>{store.fundraiser}</p>*/}
-                  {/*</div>*/}
                   <div className='aspect-w-12 aspect-h-12'>
                     <img
-                      src={store.image}
+                      src={store.user?.avatar as string}
                       className='pointer-events-none object-cover'
-                      alt={`${store.name} image`}
+                      alt={`${store.user?.first_name} image`}
                     />
                   </div>
                   <div className='mt-3 px-4 py-2'>
                     <h2 className='text-gray-900 font-bold text-lg tracking-wide'>
-                      {store.name}
+                      {store.user?.full_name}
                     </h2>
                     <p className='text-rose-500 font-semibold mt-2'>
-                      {store.timeLeft}
+                      ends {dayjs(store.fundraiser?.end_date).fromNow()}
                     </p>
                     <div className='h-1 w-full bg-black mt-2 rounded-full'>
                       <div
                         className='rounded-l-full bg-green-600 p-0.5 text-center text-xs font-medium leading-none text-green-100'
                         style={{
-                          width: `${(store.total / store.goal) * 100}%`,
+                          width: `${
+                            (store.progress.current / store.progress.goal) * 100
+                          }%`,
                         }}
                       />
                     </div>
                     <div className='mt-3 text-black text-sm'>
                       <span className='text-gray-600'>Raised: </span>
                       <span className='font-bold text-emerald-600'>
-                        ${store.total}
+                        ${parseInt(store.progress.current)}
                       </span>{' '}
-                      / ${store.goal}
+                      / ${store.progress.goal}
                     </div>
                   </div>
                 </div>

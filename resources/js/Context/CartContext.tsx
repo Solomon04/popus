@@ -1,9 +1,10 @@
 import { createContext } from 'react'
 
 export type CartContextProps = {
-  items?: App.Models.Product[]
-  remove?: (id: string) => void
-  add?: (product: App.Models.Product) => void
+  items?: App.Models.CartItem[]
+  remove?: (product: App.Models.Product) => void
+  add?: (product: App.Models.Product, quantity: number) => void
+  subtotal?: number
 }
 
 const cartContextProps: CartContextProps = {}

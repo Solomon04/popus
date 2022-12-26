@@ -12,6 +12,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.7",
+        "shippo/shippo-php": "^2.0",
         "signifly/laravel-shopify": "^1.2",
         "stripe/stripe-php": "^10.1",
         "tightenco/ziggy": "^1.0",

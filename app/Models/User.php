@@ -38,6 +38,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['full_name'];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -64,5 +71,10 @@ class User extends Authenticatable
     public function fundraisers(): HasMany
     {
         return $this->hasMany(Fundraiser::class, 'organizer_id');
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

@@ -13,15 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('rates', function (Blueprint $table) {
             $table->id();
-            $table->string('shopify_product_id');
-            $table->string('title');
-            $table->mediumText('description');
-            $table->double('price', 8, 2);
-            $table->double('weight', 8, 2);
+            $table->foreignId('cart_id')->constrained('carts');
+            $table->string('shippo_id');
+            $table->string('provider');
+            $table->string('name');
+            $table->double('amount', 8, 2);
+            $table->integer('days');
             $table->string('image');
-            $table->boolean('active')->default(false);
+            $table->string('description');
+            $table->string('tracking_number')->nullable();
+
             $table->timestamps();
         });
     }
@@ -33,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('rates');
     }
 };

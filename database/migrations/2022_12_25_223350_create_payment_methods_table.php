@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('shopify_product_id');
-            $table->string('title');
-            $table->mediumText('description');
-            $table->double('price', 8, 2);
-            $table->double('weight', 8, 2);
-            $table->string('image');
-            $table->boolean('active')->default(false);
+            $table->foreignId('cart_id')->constrained('carts');
+            $table->string('stripe_payment_method_id');
+            $table->string('brand');
+            $table->string('exp_month');
+            $table->string('exp_year');
+            $table->string('last4');
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('payment_methods');
     }
 };

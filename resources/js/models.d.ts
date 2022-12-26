@@ -8,11 +8,12 @@ declare namespace App.Models {
     export interface Address {
         id: number;
         cart_id: number;
-        street: string;
+        address: string;
         unit: string | null;
         city: string;
         state: string;
-        zip: string;
+        postal: string;
+        country: string;
         created_at: string | null;
         updated_at: string | null;
         cart?: App.Models.Cart | null;
@@ -20,6 +21,12 @@ declare namespace App.Models {
 
     export interface Cart {
         id: number;
+        session_id: string;
+        active: boolean;
+        store_id: number | null;
+        stripe_session_id: string | null;
+        shippo_rate_id: string | null;
+        customer_id: number | null;
         created_at: string | null;
         updated_at: string | null;
         items?: Array<App.Models.CartItem> | null;
@@ -27,6 +34,8 @@ declare namespace App.Models {
         order?: App.Models.Order | null;
         address?: App.Models.Address | null;
         customer?: App.Models.Customer | null;
+        payment_method?: App.Models.PaymentMethod | null;
+        rate?: App.Models.Rate | null;
         items_count?: number | null;
     }
 
@@ -67,26 +76,62 @@ declare namespace App.Models {
         participant_count: number;
         code: string;
         paid_out: boolean;
+        city: string;
+        state: string;
+        postal_code: string;
         created_at: string | null;
         updated_at: string | null;
         organizer?: App.Models.User | null;
+        stores?: Array<App.Models.Store> | null;
+        stores_count?: number | null;
         readonly status?: any;
+        readonly leaderboard?: any;
     }
 
     export interface Order {
         id: number;
+        uuid: string;
         cart_id: number;
         customer_id: number;
         store_id: number;
-        shopify_order_id: string;
+        status: string;
+        shopify_order_id: string | null;
+        stripe_payment_id: string | null;
         sub_total: number;
         shipping_total: number;
+        tax_total: number;
         total: number;
         created_at: string | null;
         updated_at: string | null;
-        customer?: App.Models.Customer | null;
         cart?: App.Models.Cart | null;
         store?: App.Models.Store | null;
+        payment?: App.Models.Payment | null;
+        customer?: App.Models.Customer | null;
+    }
+
+    export interface Payment {
+        id: number;
+        order_id: number;
+        stripe_payment_id: string;
+        stripe_price: number;
+        stripe_status: string;
+        stripe_refund_id: string | null;
+        created_at: string | null;
+        updated_at: string | null;
+        order?: App.Models.Order | null;
+    }
+
+    export interface PaymentMethod {
+        id: number;
+        cart_id: number;
+        stripe_payment_method_id: string;
+        brand: string;
+        exp_month: string;
+        exp_year: string;
+        last4: string;
+        created_at: string | null;
+        updated_at: string | null;
+        cart?: App.Models.Cart | null;
     }
 
     export interface Product {
@@ -95,10 +140,27 @@ declare namespace App.Models {
         title: string;
         description: string;
         price: number;
+        weight: number;
         image: string;
         active: boolean;
         created_at: string | null;
         updated_at: string | null;
+    }
+
+    export interface Rate {
+        id: number;
+        cart_id: number;
+        shippo_id: string;
+        provider: string;
+        name: string;
+        amount: number;
+        days: number;
+        image: string;
+        description: string;
+        tracking_number: string | null;
+        created_at: string | null;
+        updated_at: string | null;
+        cart?: App.Models.Cart | null;
     }
 
     export interface Store {
@@ -113,6 +175,8 @@ declare namespace App.Models {
         fundraiser?: App.Models.Fundraiser | null;
         orders?: Array<App.Models.Order> | null;
         orders_count?: number | null;
+        readonly progress?: any;
+        readonly leaderboard?: any;
     }
 
     export interface User {
@@ -127,6 +191,11 @@ declare namespace App.Models {
         remember_token: string | null;
         created_at: string | null;
         updated_at: string | null;
+        stores?: Array<App.Models.Store> | null;
+        fundraisers?: Array<App.Models.Fundraiser> | null;
+        stores_count?: number | null;
+        fundraisers_count?: number | null;
+        readonly full_name?: string;
     }
 
 }

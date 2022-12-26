@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Address extends Model
+class PaymentMethod extends Model
 {
     use HasFactory;
 
@@ -16,19 +16,15 @@ class Address extends Model
      * @var string[]
      */
     protected $fillable = [
-        'address',
-        'unit',
-        'city',
-        'state',
-        'postal',
-        'cart_id'
+        'cart_id',
+        'stripe_payment_method_id',
+        'brand',
+        'exp_month',
+        'exp_year',
+        'last4',
+        'is_default',
     ];
 
-    /**
-     * An address belongs to a cart
-     *
-     * @return BelongsTo
-     */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);

@@ -38,6 +38,13 @@ class Store extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['progress'];
+
+    /**
      * A popup store belongs to one user.
      *
      * @return BelongsTo
@@ -65,5 +72,29 @@ class Store extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the progress of the store
+     *
+     * @return float[]|int[]
+     */
+    public function getProgressAttribute()
+    {
+        $current = $this->orders()->sum('total') / PHP_ROUND_HALF_DOWN;
+        return [
+            'goal' => $this->fundraiser->goal,
+            'current' => $current
+        ];
+    }
+
+    /**
+     * @return Store[]|\Illuminate\Database\Eloquent\Collection|mixed
+     */
+    public function getLeaderboardAttribute()
+    {
+        return $this->fundraiser->stores->load('user')->sortByDesc(function (Store $store){
+            return $store->progress['current'];
+        })->values();
     }
 }

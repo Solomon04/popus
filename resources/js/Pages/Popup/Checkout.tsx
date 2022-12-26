@@ -1,5 +1,5 @@
 import { PAYMENT, SHIPPING, ShippingRate } from '@/types'
-import { classNames } from '@/utils'
+import { classNames, formatPhoneNumberWhileTyping } from '@/utils'
 import { RadioGroup } from '@headlessui/react'
 import {
   CheckCircleIcon,
@@ -95,6 +95,13 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
       token: undefined,
       error: 'An error occurred with your payment method',
     }
+  }
+
+  const handlePhoneNumberChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let phone = formatPhoneNumberWhileTyping(event)
+    setPhone(phone as string)
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -228,7 +235,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         value={phone}
                         id='phone'
                         title='phone'
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={handlePhoneNumberChange}
                         type='tel'
                         required={true}
                       />

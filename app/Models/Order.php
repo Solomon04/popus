@@ -42,13 +42,13 @@ class Order extends Model
         'shipping_total',
         'tax_total',
         'total',
-        'status'
+        'status',
     ];
 
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var  array<string, string>
      */
     protected $casts = ['status' => OrderStatus::class];
 

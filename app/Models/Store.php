@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\FundraiserStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,7 +34,7 @@ class Store extends Model
     protected $fillable = [
         'user_id',
         'fundraiser_id',
-        'uuid'
+        'uuid',
     ];
 
     /**
@@ -42,7 +42,7 @@ class Store extends Model
      *
      * @var array
      */
-    protected $appends = ['progress'];
+    protected $appends = ['progress', 'is_active'];
 
     /**
      * A popup store belongs to one user.
@@ -82,9 +82,10 @@ class Store extends Model
     public function getProgressAttribute()
     {
         $current = $this->orders()->sum('total') / PHP_ROUND_HALF_DOWN;
+
         return [
             'goal' => $this->fundraiser->goal,
-            'current' => $current
+            'current' => $current,
         ];
     }
 
@@ -93,8 +94,13 @@ class Store extends Model
      */
     public function getLeaderboardAttribute()
     {
-        return $this->fundraiser->stores->load('user')->sortByDesc(function (Store $store){
+        return $this->fundraiser->stores->load('user')->sortByDesc(function (Store $store) {
             return $store->progress['current'];
         })->values();
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return $this->fundraiser->status == FundraiserStatus::IN_PROGRESS;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FundraiserStatus;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,13 +46,13 @@ class Fundraiser extends Model
         'paid_out',
         'city',
         'state',
-        'postal_code'
+        'postal_code',
     ];
 
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'start_time' => 'datetime',
@@ -70,7 +70,6 @@ class Fundraiser extends Model
         return $this->belongsTo(User::class, 'organizer_id');
     }
 
-
     /**
      * A fundraiser has many popup stores.
      *
@@ -80,7 +79,6 @@ class Fundraiser extends Model
     {
         return $this->hasMany(Store::class);
     }
-
 
     /**
      * Convert the goal as cents to dollars (Stripe requires cents)
@@ -103,22 +101,20 @@ class Fundraiser extends Model
         $this->attributes['goal'] = $price * 100;
     }
 
-    /**
-     * Get the current status of a fundraiser.
-     *
-     * @return FundraiserStatus
-     */
     public function getStatusAttribute()
     {
-        $hasStarted = $this->start_date->isPast();
-        $hasEnded = $this->end_date->isPast();
-        if($hasStarted && $hasEnded){
+        $start = Carbon::parse($this->start_date);
+        $end = Carbon::parse($this->end_date);
+
+        if ($start->isPast() && $end->isPast()) {
             return FundraiserStatus::ENDED;
-        }elseif($hasStarted && !$hasEnded){
-            return FundraiserStatus::IN_PROGRESS;
-        }else {
-            return FundraiserStatus::UPCOMING;
         }
+
+        if ($start->isPast() && $end->isFuture()) {
+            return FundraiserStatus::IN_PROGRESS;
+        }
+
+        return FundraiserStatus::UPCOMING;
     }
 
     /**
@@ -126,7 +122,7 @@ class Fundraiser extends Model
      */
     public function getLeaderboardAttribute()
     {
-        return $this->stores->load('user')->sortByDesc(function (Store $store){
+        return $this->stores->load('user')->sortByDesc(function (Store $store) {
             return $store->progress['current'];
         })->values();
     }

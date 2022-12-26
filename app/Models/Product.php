@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
@@ -22,16 +22,16 @@ class Product extends Model
         'image',
         'active',
         'description',
-        'weight'
+        'weight',
     ];
 
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
-        'active' => 'bool'
+        'active' => 'bool',
     ];
 
     public function scopeActive(Builder $query)

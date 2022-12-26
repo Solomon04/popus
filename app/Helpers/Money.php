@@ -11,6 +11,6 @@ class Money
 
     public static function dollarsToCents(float $dollars): int
     {
-        return round($dollars * 100);
+        return (int) round($dollars * 100);
     }
 }

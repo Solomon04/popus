@@ -7,6 +7,7 @@ import { FunctionComponent, useContext, useState } from 'react'
 type Props = {
   product: App.Models.Product
   onSelectedQuantity: (quantity: number) => void
+  active: boolean
 }
 
 const sizes = [
@@ -27,12 +28,13 @@ const sizes = [
 const ProductDetail: FunctionComponent<Props> = ({
   product,
   onSelectedQuantity,
+  active = false,
 }) => {
   const [selectedSize, setSelectedSize] = useState(sizes[0])
   const addToCart = () => {
-    // if (add) {
-    //   // add(product, selectedSize.value)
-    // }
+    if (!active) {
+      return
+    }
     onSelectedQuantity(selectedSize.value)
   }
 
@@ -135,8 +137,14 @@ const ProductDetail: FunctionComponent<Props> = ({
             </div>
 
             <button
+              disabled={!active}
               onClick={addToCart}
-              className='mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-900 py-3 px-8 text-base font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'>
+              className={classNames(
+                active
+                  ? 'bg-gray-900 hover:bg-gray-800'
+                  : 'bg-gray-500 cursor-pointer-not-allowed',
+                'mt-6 flex w-full items-center justify-center rounded-md border border-transparent  py-3 px-8 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
+              )}>
               Add to bag
             </button>
           </div>

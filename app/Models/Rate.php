@@ -24,7 +24,7 @@ class Rate extends Model
         'days',
         'image',
         'description',
-        'tracking_number'
+        'tracking_number',
     ];
 
     public function cart(): BelongsTo

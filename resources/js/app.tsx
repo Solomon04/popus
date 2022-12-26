@@ -11,7 +11,8 @@ import './bootstrap'
 
 const appName =
   window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel'
-const stripePromise = loadStripe('pk_test_Jp3kv7BJibBz4ANCtbTISq6q00V7NZXMcQ')
+// @ts-ignore
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC)
 
 createInertiaApp({
   title: (title) => `${title} - ${appName}`,

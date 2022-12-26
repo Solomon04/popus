@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { FunctionComponent } from 'react'
+import CountUp from 'react-countup'
 
 dayjs.extend(relativeTime)
 
@@ -13,16 +14,18 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
   return (
     <div className='grid grid-cols-1 rounded-md bg-gray-50 md:grid-cols-3 md:gap-5 md:p-12'>
       <div className='md:order-2'>
-        <img
-          src={store.user?.avatar as string}
-          className='max-w-96 h-auto rounded-md'
-          alt={store.user?.first_name}
-        />
+        <div className='aspect-w-12 aspect-h-12'>
+          <img
+            src={store.user?.avatar as string}
+            className='object-cover shadow sm:rounded-md'
+            alt={store.user?.first_name}
+          />
+        </div>
       </div>
       <div className='col-span-2 p-5 md:order-1 md:p-0'>
         <h3 className='text-gray-600 md:text-xl'>{store.fundraiser?.name}</h3>
         <h1 className='mb-3 text-3xl font-semibold text-gray-900 md:mb-8 md:text-4xl lg:text-5xl'>
-          {store.user?.first_name} {store.user?.last_name}'s Pop-Up Store
+          {store.user?.first_name}'s Pop-Up Store
         </h1>
         <p className='mb-5 leading-relaxed text-gray-900 md:text-xl'>
           Hey! Its that time of year! Your favorite JM player is asking for your
@@ -44,7 +47,14 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
         <div className='flex items-center justify-between'>
           <h3 className='text-gray-700'>
             <span className='text-2xl font-semibold text-gray-900'>
-              ${parseInt(store.progress.current)}
+              <CountUp
+                start={0}
+                end={store.progress.current}
+                duration={0.5}
+                decimals={2}
+                decimal='.'
+                prefix='$'
+              />
             </span>{' '}
             sold of ${store.progress.goal} goal
           </h3>

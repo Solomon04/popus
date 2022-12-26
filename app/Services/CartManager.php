@@ -1,22 +1,18 @@
 <?php
 
-
 namespace App\Services;
 
-
-use App\Contracts\Commerce\CartManagerContract;
 use App\Models\Cart;
 use App\Models\CartItem;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Session\Store;
 
 class CartManager
 {
     /**
      * CartManager constructor.
-     * @param Store $sessionStore
-     * @param Cart $cart
+     *
+     * @param  Store  $sessionStore
+     * @param  Cart  $cart
      */
     public function __construct(public Store $sessionStore, public Cart $cart)
     {
@@ -31,11 +27,12 @@ class CartManager
     {
         $cart = Cart::with('items.product', 'store.user', 'address', 'customer')->where([
             'session_id' => $this->sessionStore->getId(),
-            'active' => true
+            'active' => true,
         ])->first();
 
         if (null === $cart) {
             $this->sessionStore->regenerateToken();
+
             return $this->cart->create(['session_id' => $this->sessionStore->getId()])->load('items');
         }
 
@@ -50,6 +47,7 @@ class CartManager
     public function isEmpty(): bool
     {
         $cart = $this->getCart();
+
         return $cart->items()->count() === 0;
     }
 
@@ -61,9 +59,9 @@ class CartManager
     public function isNotEmpty(): bool
     {
         $cart = $this->getCart();
+
         return $cart->items()->count() === 0;
     }
-
 
     /**
      * Completely destroys the cart: removes all related models (cart, item, etc) from the DB
@@ -77,9 +75,8 @@ class CartManager
     /**
      * Add an item to the cart (or adds the quantity if the product is already in the cart)
      *
-     * @param int $id
-     * @param int $qty
-     *
+     * @param  int  $id
+     * @param  int  $qty
      * @return CartItem Returns the item object that has been created (or updated)
      */
     public function addItem(int $id, int $qty = 1): CartItem
@@ -88,14 +85,14 @@ class CartManager
 
         return $cart->items()->updateOrCreate([
             'product_id' => $id,
-            'quantity' => $qty
+            'quantity' => $qty,
         ]);
     }
 
     /**
      * Removes an item from the cart
      *
-     * @param int $id
+     * @param  int  $id
      */
     public function removeItem(int $id): void
     {

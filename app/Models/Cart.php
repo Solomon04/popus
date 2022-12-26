@@ -24,7 +24,6 @@ class Cart extends Model
         'customer_id',
     ];
 
-
     /**
      * A cart can have many items
      *
@@ -96,43 +95,27 @@ class Cart extends Model
     }
 
     /**
-     * Scope a query to only include users of a given type.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  mixed  $type
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeCurrentCart($query, $sessionId, $storeId)
-    {
-        return $query->where('store_id', $storeId)
-            ->where('session_id', $sessionId)
-            ->where('active', true);
-    }
-
-    /**
      * Add an item to the cart (or adds the quantity if the product is already in the cart)
      *
-     * @param int $id
-     * @param int $qty
-     *
+     * @param  int  $id
+     * @param  int  $qty
      * @return CartItem Returns the item object that has been created (or updated)
      */
     public function addItem(int $id, int $qty = 1): CartItem
     {
         return $this->items()->updateOrCreate([
             'product_id' => $id,
-            'quantity' => $qty
+            'quantity' => $qty,
         ]);
     }
 
     /**
      * Removes an item from the cart
      *
-     * @param int $id
+     * @param  int  $id
      */
     public function removeItem(int $id): void
     {
         $this->items()->where('product_id', '=', $id)->delete();
     }
-
 }

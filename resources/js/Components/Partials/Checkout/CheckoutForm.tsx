@@ -1,9 +1,7 @@
-import {FunctionComponent} from "react";
+import { FunctionComponent } from 'react'
 
 const CheckoutForm: FunctionComponent = () => {
-    return (
-        <></>
-    );
-};
+  return <></>
+}
 
-export default CheckoutForm;
+export default CheckoutForm

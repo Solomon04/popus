@@ -3,13 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Product;
 use App\Models\Store;
-use App\Services\CartManager;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
-use Inertia\Inertia;
 
 class CartController extends Controller
 {
@@ -17,13 +12,13 @@ class CartController extends Controller
     {
         $this->validate($request, [
             'product_id' => ['required', 'exists:products,id'],
-            'quantity' => ['numeric']
+            'quantity' => ['numeric'],
         ]);
 
         /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate([  'session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
+        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
             'session_id' => session()->getId(),
-            'store_id' => $store->id
+            'store_id' => $store->id,
         ]);
 
         $cart->addItem($request->get('product_id'), $request->get('quantity'));
@@ -40,7 +35,7 @@ class CartController extends Controller
         /** @var Cart $cart */
         $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
             'session_id' => session()->getId(),
-            'store_id' => $store->id
+            'store_id' => $store->id,
         ]);
 
         $cart->removeItem($request->get('product_id'));

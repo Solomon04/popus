@@ -34,7 +34,7 @@ class StoreOrderRequest extends FormRequest
             'state' => ['required', 'string'],
             'postal' => ['required'],
             'stripe_token' => ['required', 'string'],
-            'rate' => ['required', 'string']
+            'rate' => ['required', 'string'],
         ];
     }
 }

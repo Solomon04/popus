@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Fundraiser;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
@@ -20,25 +19,25 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-         $admin = \App\Models\User::factory()->create([
-             'first_name' => 'Admin',
-             'last_name' => 'User',
-             'email' => 'admin@example.com',
-         ]);
+        $admin = \App\Models\User::factory()->create([
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'email' => 'admin@example.com',
+        ]);
 
-         $fundraiser = $admin->fundraisers()->create([
-             'name' => 'John Marshall Boys Basketball',
-             'start_date' => now(),
-             'end_date' => now()->addWeek()->toDateString(),
-             'activity' => 'Basketball',
-             'affiliation' => 'High School',
-             'goal' => 900,
-             'participant_count' => 9,
-             'code' => Str::random(6),
-             'city' => 'Rochester',
-             'state' => 'MN',
-             'postal_code' => '55901'
-         ]);
+        $fundraiser = $admin->fundraisers()->create([
+            'name' => 'John Marshall Boys Basketball',
+            'start_date' => now(),
+            'end_date' => now()->addWeek()->toDateString(),
+            'activity' => 'Basketball',
+            'affiliation' => 'High School',
+            'goal' => 900,
+            'participant_count' => 9,
+            'code' => Str::random(6),
+            'city' => 'Rochester',
+            'state' => 'MN',
+            'postal_code' => '55901',
+        ]);
 
         // Update Products from Shopify API
         Artisan::call('app:update-products');

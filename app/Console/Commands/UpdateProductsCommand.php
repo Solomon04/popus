@@ -32,7 +32,7 @@ class UpdateProductsCommand extends Command
     {
         $products = $shopify->getCollectionProducts(config('shopify.credentials.collection'));
 
-        $products->each(function (ProductResource $shopifyProduct){
+        $products->each(function (ProductResource $shopifyProduct) {
             $attributes = $shopifyProduct->getAttributes();
             $variant = $shopifyProduct->getVariants()->firstOrFail();
 
@@ -43,11 +43,12 @@ class UpdateProductsCommand extends Command
                 'image' => $attributes['image']['src'] ?? '',
                 'active' => $attributes['status'] === 'active',
                 'description' => $attributes['body_html'],
-                'weight' => $variant['weight']
+                'weight' => $variant['weight'],
             ]);
 
-            $this->comment('Uploaded / Updated ' . $product->title);
+            $this->comment('Uploaded / Updated '.$product->title);
         });
+
         return Command::SUCCESS;
     }
 }

@@ -1,5 +1,6 @@
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import { Link } from '@inertiajs/inertia-react'
+import route from 'ziggy-js'
 
 import { FunctionComponent, useState } from 'react'
 
@@ -23,7 +24,9 @@ const Leaderboard: FunctionComponent<Props> = ({ leaderboard }) => {
         <ul role='list' className='-my-5 divide-y divide-gray-200'>
           {leaderboard.slice(0, 5).map((store, place) => (
             <li className='py-4' key={place}>
-              <div className='flex items-center space-x-4'>
+              <Link
+                href={route('popup.store', [store.uuid])}
+                className='flex items-center space-x-4'>
                 <h3>{place + 1}</h3>
                 <div className='flex-shrink-0'>
                   <img
@@ -42,7 +45,7 @@ const Leaderboard: FunctionComponent<Props> = ({ leaderboard }) => {
                     ${parseInt(store.progress.current)}
                   </h3>
                 </div>
-              </div>
+              </Link>
             </li>
           ))}
         </ul>
@@ -63,7 +66,7 @@ const Leaderboard: FunctionComponent<Props> = ({ leaderboard }) => {
           {leaderboard.map((store, place) => (
             <li className='py-4 bg-gray-50 rounded p-2' key={place}>
               <Link
-                href={`/store/${store.uuid}`}
+                href={route('popup.store', [store.uuid])}
                 className='flex items-center space-x-4'>
                 <h3>{place + 1}</h3>
                 <div className='flex-shrink-0'>

@@ -1,17 +1,24 @@
-import React, {FunctionComponent, PropsWithChildren} from 'react';
+import React, { FunctionComponent, PropsWithChildren } from 'react'
 
 type Props = PropsWithChildren<{
-    forInput: string
-    value: string
-    className: string
+  forInput: string
+  value: string
+  className: string
 }>
 
-const InputLabel: FunctionComponent<PropsWithChildren<Props>> = ({ forInput, value, className, children }) => {
-    return (
-        <label htmlFor={forInput} className={`block font-medium text-sm text-gray-700 ` + className}>
-            {value ? value : children}
-        </label>
-    );
+const InputLabel: FunctionComponent<PropsWithChildren<Props>> = ({
+  forInput,
+  value,
+  className,
+  children,
+}) => {
+  return (
+    <label
+      htmlFor={forInput}
+      className={`block font-medium text-sm text-gray-700 ` + className}>
+      {value ? value : children}
+    </label>
+  )
 }
 
-export default InputLabel;
+export default InputLabel

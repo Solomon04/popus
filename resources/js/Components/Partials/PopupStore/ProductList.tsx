@@ -8,18 +8,18 @@ import ProductDetail from '@/Components/Partials/PopupStore/ProductDetail'
 type Props = {
   products: App.Models.Product[]
   onAdd: (product: App.Models.Product, quantity: number) => void
+  active: boolean
 }
 
-const ProductList: FunctionComponent<Props> = ({ products, onAdd }) => {
+const ProductList: FunctionComponent<Props> = ({ products, onAdd, active }) => {
   const [showProductModal, setShowProductModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
   const addToCart = (quantity: number) => {
-    console.log(quantity)
-    if (selectedProduct) {
+    if (selectedProduct && active) {
       onAdd(selectedProduct, quantity)
+      closeProductModal()
     }
-    closeProductModal()
   }
 
   const closeProductModal = () => {
@@ -68,6 +68,7 @@ const ProductList: FunctionComponent<Props> = ({ products, onAdd }) => {
       {selectedProduct ? (
         <Modal open={showProductModal} setOpen={closeProductModal}>
           <ProductDetail
+            active={active}
             product={selectedProduct}
             onSelectedQuantity={(quantity) => addToCart(quantity)}
           />

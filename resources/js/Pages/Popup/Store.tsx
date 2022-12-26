@@ -1,8 +1,9 @@
 import { supporters } from '@/static-data'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import { Inertia } from '@inertiajs/inertia'
 import route from 'ziggy-js'
 
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useMemo, useState } from 'react'
 
 import Cart from '@/Components/Partials/PopupStore/Cart'
 import Jumbotron from '@/Components/Partials/PopupStore/Jumbotron'
@@ -35,6 +36,10 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
     )
   }
 
+  const [isBuyable] = useMemo(() => {
+    return [cart.items && store.is_active]
+  }, [cart.items, store])
+
   const removeFromCart = (product: App.Models.Product) => {
     Inertia.patch(
       route('remove.from.cart', [store.uuid]),
@@ -52,11 +57,30 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
   return (
     <PopupStoreLayout store={store} loading={loading}>
       <div className='max-w-7xl mx-auto py-4'>
+        {!store.is_active && (
+          <div className='rounded-md bg-red-50 p-4'>
+            <div className='flex'>
+              <div className='flex-shrink-0'>
+                <ExclamationTriangleIcon
+                  className='h-5 w-5 text-red-400'
+                  aria-hidden='true'
+                />
+              </div>
+              <div className='ml-3'>
+                <div className='text-sm text-red-700'>
+                  <p>
+                    This popup store's fundraiser ended is no longer available.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Profile Jumbotron */}
         <Jumbotron store={store} />
         <div className='grid grid-cols-1 rounded-md md:grid-cols-3 md:gap-8 md:p-12'>
           {/* Product List */}
-          <ProductList onAdd={addToCart} products={products} />
+          <ProductList onAdd={addToCart} products={products} active={true} />
 
           <div className='col-span-1 p-5 md:p-0'>
             {/* Leaderboard List + Leaderboard Slideover */}
@@ -64,17 +88,17 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
               <Leaderboard leaderboard={store.leaderboard} />
             )}
             {/* Supporters List + Support Slideover */}
-            <Supporters supporters={supporters} />
+            <Supporters supporters={store.orders ?? []} />
           </div>
         </div>
       </div>
-      {cart.items && (
+      {cart.items && store.is_active ? (
         <Cart
           onRemove={removeFromCart}
           items={cart.items}
           store_uuid={store.uuid}
         />
-      )}
+      ) : null}
     </PopupStoreLayout>
   )
 }

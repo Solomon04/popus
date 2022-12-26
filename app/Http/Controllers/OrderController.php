@@ -7,14 +7,10 @@ use App\Helpers\Money;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Store;
-use App\Services\CartManager;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Artesaos\SEOTools\SEOTools;
 use Inertia\Inertia;
-use Signifly\Shopify\Exceptions\ValidationException;
 use Signifly\Shopify\Shopify;
 use Stripe\Card;
 use Stripe\PaymentMethod;
@@ -22,54 +18,46 @@ use Stripe\StripeClient;
 
 class OrderController extends Controller
 {
-    public function __construct(protected StripeClient $stripeClient, protected Shopify $shopify)
+    public function __construct(protected StripeClient $stripeClient, protected Shopify $shopify, protected SEOTools $seo)
     {
     }
 
-    // Login or Create an Account via Get Started
-    // I should be able to create a fundraiser
-    // I should be able to view a fundraiser
-    // I should be able to view my dashboard
-    // I should be able to join a fundraiser
-
-    // TODO: Handle edge cases: What happens if an order is deleted / what happens if an order is cancelled / what happens if an order is fulfilled?
     public function store(StoreOrderRequest $request, Store $store)
     {
         /** @var Cart $cart */
         $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
             'session_id' => session()->getId(),
-            'store_id' => $store->id
+            'store_id' => $store->id,
         ]);
 
-        $subtotal = $cart->items->sum(function ($item){
+        $subtotal = $cart->items->sum(function ($item) {
             return $item->quantity * $item->product->price;
         });
 
         try {
+            /** @var array $rate */
             $rate = \Shippo_Rate::retrieve($request->input('rate'));
-
-        }catch (\Shippo_Error $exception){
+        } catch (\Shippo_Error $exception) {
             return back()->with('error', 'failure');
         }
 
         $shippingTotal = $rate['amount'];
-        $taxTotal = ($shippingTotal + $subtotal) *  0.0725;
+        $taxTotal = ($shippingTotal + $subtotal) * 0.0725;
 
         $total = round($subtotal + $taxTotal + $shippingTotal, 2);
 
         $customer = $cart->customer()->updateOrCreate(['email' => $request->input('email')], [
             'email' => $request->input('email'),
-            'name' => $request->input('first_name') . ' ' . $request->input('last_name'),
+            'name' => $request->input('first_name').' '.$request->input('last_name'),
             'phone' => $request->input('phone'),
         ]);
-
 
         /** @var PaymentMethod $paymentMethod */
         $paymentMethod = $this->stripeClient->paymentMethods->create([
             'type' => 'card',
             'card' => [
                 'token' => $request->input('stripe_token'),
-            ]
+            ],
         ]);
 
         $cart->address()->create([
@@ -80,7 +68,7 @@ class OrderController extends Controller
             'postal' => $request->input('postal'),
             'last_name' => $request->input('last_name'),
             'first_name' => $request->input('first_name'),
-            'country' => 'USA'
+            'country' => 'USA',
         ]);
 
         $cart->rate()->create([
@@ -93,12 +81,14 @@ class OrderController extends Controller
             'description' => $rate['duration_terms'],
         ]);
 
+        /** @var Card $card */
+        $card = $paymentMethod->card;
         $cart->paymentMethod()->create([
             'stripe_payment_method_id' => $paymentMethod->id,
-            'brand' => $paymentMethod->card->brand,
-            'exp_month' => $paymentMethod->card->exp_month,
-            'exp_year' => $paymentMethod->card->exp_year,
-            'last4' => $paymentMethod->card->last4,
+            'brand' => $card->brand,
+            'exp_month' => $card->exp_month,
+            'exp_year' => $card->exp_year,
+            'last4' => $card->last4,
         ]);
 
         $paymentIntent = $this->stripeClient->paymentIntents->create([
@@ -119,7 +109,7 @@ class OrderController extends Controller
             'tax_total' => $taxTotal,
             'total' => $total,
             'status' => OrderStatus::PENDING,
-            'customer_id' => $customer->id
+            'customer_id' => $customer->id,
         ]);
 
         $order->payment()->create([
@@ -128,10 +118,10 @@ class OrderController extends Controller
             'stripe_status' => $paymentIntent->status,
         ]);
 
-        $lineItems = $cart->items->map(function (CartItem $cartItem){
+        $lineItems = $cart->items->map(function (CartItem $cartItem) {
             return [
                 'variant_id' => $cartItem->product->shopify_product_id,
-                'quantity' => $cartItem->quantity
+                'quantity' => $cartItem->quantity,
             ];
         })->toArray();
 
@@ -141,55 +131,55 @@ class OrderController extends Controller
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
-                'phone' => '+1' . $request->input('phone'),
+                'phone' => '+1'.$request->input('phone'),
                 'addresses' => [
                     [
-                        "address1" => $request->input('address'),
-                        "city" => $request->input('city'),
-                        "province" => $request->input('state'),
-                        "zip" => $request->input('postal'),
-                        "last_name" => $request->input('last_name'),
-                        "first_name" => $request->input('first_name'),
-                        "country" => 'USA'
-                    ]
-                ]
+                        'address1' => $request->input('address'),
+                        'city' => $request->input('city'),
+                        'province' => $request->input('state'),
+                        'zip' => $request->input('postal'),
+                        'last_name' => $request->input('last_name'),
+                        'first_name' => $request->input('first_name'),
+                        'country' => 'USA',
+                    ],
+                ],
             ],
             'transactions' => [
                 [
-                    "kind" => "sale",
-                    "status" => "success",
-                    "amount" => $total
+                    'kind' => 'sale',
+                    'status' => 'success',
+                    'amount' => $total,
                 ],
                 [
-                    "kind" => "shipping",
-                    "status" => "success",
-                    "amount" => $shippingTotal
+                    'kind' => 'shipping',
+                    'status' => 'success',
+                    'amount' => $shippingTotal,
                 ],
             ],
             'currency' => 'USD',
             'total_tax' => round($taxTotal, 2),
             'shipping_address' => [
-                "address1" => $request->input('address'),
-                "city" => $request->input('city'),
-                "province" => $request->input('state'),
-                "zip" => $request->input('postal'),
-                "last_name" => $request->input('last_name'),
-                "first_name" => $request->input('first_name'),
-                "country" => 'USA'
+                'address1' => $request->input('address'),
+                'city' => $request->input('city'),
+                'province' => $request->input('state'),
+                'zip' => $request->input('postal'),
+                'last_name' => $request->input('last_name'),
+                'first_name' => $request->input('first_name'),
+                'country' => 'USA',
             ],
-            'billing_address' =>   [
-                "address1" => $request->input('address'),
-                "city" => $request->input('city'),
-                "province" => $request->input('state'),
-                "zip" => $request->input('postal'),
-                "last_name" => $request->input('last_name'),
-                "first_name" => $request->input('first_name'),
-                "country" => 'USA'
-            ]
-        ]);
+            'billing_address' => [
+                'address1' => $request->input('address'),
+                'city' => $request->input('city'),
+                'province' => $request->input('state'),
+                'zip' => $request->input('postal'),
+                'last_name' => $request->input('last_name'),
+                'first_name' => $request->input('first_name'),
+                'country' => 'USA',
+            ],
+        ])->getAttributes();
 
         $order->update([
-            'shopify_order_id' => $shopifyOrder->id
+            'shopify_order_id' => $shopifyOrder['id'],
         ]);
 
         $cart->update(['active' => false]);
@@ -199,18 +189,21 @@ class OrderController extends Controller
 
     public function show(Store $store, Order $order)
     {
+        $this->seo->setTitle('Receipt - Popus Gives');
+        $this->seo->opengraph()->setTitle('Receipt - Popus Gives');
+
         $order->load(['customer',
             'cart' => [
                 'items.product',
                 'address',
                 'paymentMethod',
-                'rate'
-            ]
+                'rate',
+            ],
         ]);
 
         return Inertia::render('Popup/Summary', [
             'store' => $store,
-            'order' => $order
+            'order' => $order,
         ]);
     }
 }

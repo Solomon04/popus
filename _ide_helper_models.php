@@ -63,7 +63,6 @@ namespace App\Models{
  * @property-read \App\Models\PaymentMethod|null $paymentMethod
  * @property-read \App\Models\Rate|null $rate
  * @property-read \App\Models\Store|null $store
- * @method static \Illuminate\Database\Eloquent\Builder|Cart currentCart($sessionId, $storeId)
  * @method static \Illuminate\Database\Eloquent\Builder|Cart newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cart newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cart query()
@@ -203,6 +202,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cart $cart
+ * @property-read \App\Models\Customer $customer
  * @property-read \App\Models\Payment|null $payment
  * @property-read \App\Models\Store $store
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
@@ -235,7 +235,7 @@ namespace App\Models{
  * @property string $stripe_payment_id
  * @property int $stripe_price
  * @property string $stripe_status
- * @property string $stripe_refund_id
+ * @property string|null $stripe_refund_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Order $order
@@ -323,6 +323,7 @@ namespace App\Models{
  * @property int $id
  * @property int $cart_id
  * @property string $shippo_id
+ * @property string $provider
  * @property string $name
  * @property float $amount
  * @property int $days
@@ -343,6 +344,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Rate whereProvider($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereShippoId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereTrackingNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Rate whereUpdatedAt($value)
@@ -362,6 +364,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Fundraiser $fundraiser
+ * @property-read bool $is_active
  * @property-read \App\Models\Store[]|\Illuminate\Database\Eloquent\Collection|mixed $leaderboard
  * @property-read float[]|int[] $progress
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders

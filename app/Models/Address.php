@@ -21,7 +21,7 @@ class Address extends Model
         'city',
         'state',
         'postal',
-        'cart_id'
+        'cart_id',
     ];
 
     /**

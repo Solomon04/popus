@@ -38,14 +38,13 @@ class HandleInertiaRequests extends Middleware
         /** @var CartManager $cartManager */
         $cartManager = app()->make(CartManager::class);
 
-
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
             'cart' => $cartManager->getCart(),
             'flash' => [
-                'message' => fn () => $request->session()->get('message')
+                'message' => fn () => $request->session()->get('message'),
             ],
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [

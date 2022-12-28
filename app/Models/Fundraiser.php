@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\FundraiserStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,16 +39,20 @@ class Fundraiser extends Model
         'name',
         'start_date',
         'end_date',
-        'activity',
-        'affiliation',
-        'goal',
+        'activity_id',
+        'goal_amount',
         'participant_count',
         'code',
         'paid_out',
-        'city',
-        'state',
         'postal_code',
     ];
+
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = ['activity'];
 
     /**
      * The attributes that should be cast.
@@ -78,6 +83,23 @@ class Fundraiser extends Model
     public function stores(): HasMany
     {
         return $this->hasMany(Store::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
+    }
+
+    public function scopeFuture(Builder $query): Builder
+    {
+        return $query->where('start_date', '>', now()->toDateString())
+            ->where('end_date', '>', now()->toDateString());
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('start_date', '<', now()->toDateString())
+            ->where('end_date', '>', now()->toDateString());
     }
 
     /**
@@ -125,5 +147,26 @@ class Fundraiser extends Model
         return $this->stores->load('user')->sortByDesc(function (Store $store) {
             return $store->progress['current'];
         })->values();
+    }
+
+    public function getRevenueAttribute(): float
+    {
+        $revenue = $this->stores->sum(function (Store $store) {
+            return $store->orders()->sum('total');
+        });
+
+        return round($revenue, 2);
+    }
+
+    public function getEarningsAttribute(): float
+    {
+        return round($this->revenue / PHP_ROUND_HALF_DOWN, 2);
+    }
+
+    public function getTotalOrdersAttribute(): int
+    {
+        return $this->stores->sum(function (Store $store) {
+            return $store->orders()->count();
+        });
     }
 }

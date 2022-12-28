@@ -99,7 +99,9 @@ const LivePopupStoresSection: FunctionComponent<Props> = ({ stores }) => {
                         className='rounded-l-full bg-green-600 p-0.5 text-center text-xs font-medium leading-none text-green-100'
                         style={{
                           width: `${
-                            (store.progress.current / store.progress.goal) * 100
+                            (store.progress.current /
+                              store.progress.goal_amount) *
+                            100
                           }%`,
                         }}
                       />
@@ -109,7 +111,7 @@ const LivePopupStoresSection: FunctionComponent<Props> = ({ stores }) => {
                       <span className='font-bold text-emerald-600'>
                         ${parseInt(store.progress.current)}
                       </span>{' '}
-                      / ${store.progress.goal}
+                      / ${store.progress.goal_amount}
                     </div>
                   </div>
                 </div>

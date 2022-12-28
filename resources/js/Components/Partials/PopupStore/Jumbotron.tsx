@@ -39,7 +39,9 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
           <div
             className='rounded-l-full bg-green-600 p-0.5 text-center text-xs font-medium leading-none text-green-100'
             style={{
-              width: `${(store.progress.current / store.progress.goal) * 100}%`,
+              width: `${
+                (store.progress.current / store.progress.goal_amount) * 100
+              }%`,
             }}>
             ${parseInt(store.progress.current)}
           </div>
@@ -56,7 +58,7 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
                 prefix='$'
               />
             </span>{' '}
-            sold of ${store.progress.goal} goal
+            sold of ${store.progress.goal_amount} goal
           </h3>
           <h3 className='text-gray-700'>
             ends {dayjs(store.fundraiser?.end_date).fromNow()}

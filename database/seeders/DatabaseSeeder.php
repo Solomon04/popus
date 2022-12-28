@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Activity;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
@@ -18,6 +19,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        $activities = collect(json_decode(file_get_contents(database_path('data/activities.json'))));
+
+        $activities->each(function ($activity) {
+            Activity::updateOrCreate(['name' => $activity->name], ['name' => $activity->name]);
+        });
 
         $admin = \App\Models\User::factory()->create([
             'first_name' => 'Admin',
@@ -29,13 +35,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Marshall Boys Basketball',
             'start_date' => now(),
             'end_date' => now()->addWeek()->toDateString(),
-            'activity' => 'Basketball',
-            'affiliation' => 'High School',
-            'goal' => 900,
+            'activity_id' => Activity::inRandomOrder()->first()->id,
+            'goal_amount' => 400,
             'participant_count' => 9,
             'code' => Str::random(6),
-            'city' => 'Rochester',
-            'state' => 'MN',
             'postal_code' => '55901',
         ]);
 

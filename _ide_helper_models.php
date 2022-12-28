@@ -12,6 +12,21 @@
 
 namespace App\Models{
 /**
+ * App\Models\Activity
+ *
+ * @property int $id
+ * @property string $name
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity whereName($value)
+ */
+	class Activity extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Address
  *
  * @property int $id
@@ -109,13 +124,16 @@ namespace App\Models{
  * App\Models\Customer
  *
  * @property int $id
- * @property string $name
+ * @property string $first_name
+ * @property string $last_name
  * @property string $email
  * @property string|null $phone
  * @property string|null $stripe_customer_id
  * @property string|null $shopify_customer_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
  * @method static \Illuminate\Database\Eloquent\Builder|Customer newModelQuery()
@@ -123,8 +141,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Customer query()
  * @method static \Illuminate\Database\Eloquent\Builder|Customer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Customer whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Customer whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Customer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Customer whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Customer whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Customer wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Customer whereShopifyCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Customer whereStripeCustomerId($value)
@@ -143,32 +162,34 @@ namespace App\Models{
  * @property string $name
  * @property string $start_date
  * @property string $end_date
- * @property string|null $activity
- * @property string|null $affiliation
- * @property float|int $goal
+ * @property int $activity_id
+ * @property int $goal_amount
  * @property int $participant_count
  * @property string $code
  * @property bool $paid_out
- * @property string $city
- * @property string $state
  * @property string $postal_code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Activity $activity
+ * @property-read float $earnings
+ * @property float|int $goal
  * @property-read \App\Models\Store[]|\Illuminate\Database\Eloquent\Collection|mixed $leaderboard
- * @property-read \App\Enums\FundraiserStatus $status
+ * @property-read float $revenue
+ * @property-read mixed $status
+ * @property-read int $total_orders
  * @property-read \App\Models\User $organizer
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Store[] $stores
  * @property-read int|null $stores_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser active()
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser future()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser query()
- * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereActivity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereAffiliation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereEndDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereGoal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereGoalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereOrganizerId($value)
@@ -176,7 +197,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereParticipantCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUuid($value)
  */

@@ -10,6 +10,34 @@ import InputError from '@/Components/InputError'
 
 import GuestLayout from '@/Layouts/GuestLayout'
 
+type Props = {
+  status: string
+  canResetPassword: boolean
+}
+
+// const Login = () => {
+//   const { data, setData, post, processing, errors, reset } = useForm({
+//     email: '',
+//     password: '',
+//     remember: '',
+//   })
+//   const [email, setEmail]
+//
+//   useEffect(() => {
+//     return () => {
+//       reset('password')
+//     }
+//   }, [])
+//
+//
+//
+//   return (
+//     <></>
+//   )
+// }
+//
+// export default Login
+
 export default function Login({ status, canResetPassword }: any) {
   const { data, setData, post, processing, errors, reset } = useForm({
     email: '',
@@ -23,8 +51,9 @@ export default function Login({ status, canResetPassword }: any) {
     }
   }, [])
 
-  const onHandleChange = (event: any) => {
+  const onHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setData(
+      // @ts-ignore
       event.target.name,
       event.target.type === 'checkbox'
         ? event.target.checked
@@ -32,15 +61,17 @@ export default function Login({ status, canResetPassword }: any) {
     )
   }
 
-  const submit = (e: any) => {
-    e.preventDefault()
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    console.log(data)
 
     post(route('login'))
   }
 
   return (
     <GuestLayout>
-      <Head title='Log in' />
+      <Head label='Log in' />
 
       {status && (
         <div className='mb-4 font-medium text-sm text-green-600'>{status}</div>
@@ -50,8 +81,9 @@ export default function Login({ status, canResetPassword }: any) {
         <div>
           <Input
             id='email'
-            title='Email'
-            type={data.password}
+            name='email'
+            label='Email'
+            type={'email'}
             className='mt-1 block w-full'
             onChange={onHandleChange}
           />
@@ -62,8 +94,9 @@ export default function Login({ status, canResetPassword }: any) {
         <div className='mt-4'>
           <Input
             id='password'
-            title='Password'
-            type={data.password}
+            name='password'
+            label='Password'
+            type={'password'}
             className='mt-1 block w-full'
             onChange={onHandleChange}
           />

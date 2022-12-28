@@ -5,6 +5,11 @@
  */
 
 declare namespace App.Models {
+  export interface Activity {
+    id: number
+    name: string
+  }
+
   export interface Address {
     id: number
     cart_id: number
@@ -52,7 +57,8 @@ declare namespace App.Models {
 
   export interface Customer {
     id: number
-    name: string
+    first_name: string
+    last_name: string
     email: string
     phone: string | null
     stripe_customer_id: string | null
@@ -70,22 +76,23 @@ declare namespace App.Models {
     name: string
     start_date: string
     end_date: string
-    activity: string | null
-    affiliation: string | null
-    goal: number
+    activity_id: number
+    goal_amount: number
     participant_count: number
     code: string
     paid_out: boolean
-    city: string
-    state: string
     postal_code: string
     created_at: string | null
     updated_at: string | null
     organizer?: App.Models.User | null
     stores?: Array<App.Models.Store> | null
+    activity?: App.Models.Activity | null
     stores_count?: number | null
     readonly status?: any
     readonly leaderboard?: any
+    readonly revenue?: number
+    readonly earnings?: number
+    readonly total_orders?: number
   }
 
   export interface Order {

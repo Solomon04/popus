@@ -21,7 +21,7 @@ const PopupStoreCard: FunctionComponent<Props> = ({ store }) => {
         <h3 className='text-2xl font-bold'>{store.name}</h3>
         <p className='text-sm'>
           Raised <strong>${store.total}</strong> of{' '}
-          <strong>${store.goal}</strong>
+          <strong>${store.goal_amount}</strong>
         </p>
       </div>
     </Link>

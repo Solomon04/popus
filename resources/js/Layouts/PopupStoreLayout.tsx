@@ -21,6 +21,8 @@ import LoadingOverlay from 'react-loading-overlay-ts'
 import Footer from '@/Components/Footer'
 import Navbar from '@/Components/Navbar'
 
+import AppLayout from '@/Layouts/AppLayout'
+
 // const stripePromise = loadStripe('pk_test_Jp3kv7BJibBz4ANCtbTISq6q00V7NZXMcQ')
 
 type Props = {
@@ -35,14 +37,7 @@ const PopupStoreLayout: FunctionComponent<PropsWithChildren<Props>> = ({
 }) => {
   return (
     <LoadingOverlay active={loading} spinner text='Loading your cart...'>
-      <main>
-        {/* Nav */}
-        <Navbar />
-        {/*Body*/}
-        {children}
-        {/*  Footer*/}
-        <Footer />
-      </main>
+      <AppLayout>{children}</AppLayout>
     </LoadingOverlay>
   )
 }

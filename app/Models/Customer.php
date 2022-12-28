@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +17,8 @@ class Customer extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'phone',
     ];

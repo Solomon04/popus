@@ -20,14 +20,11 @@ return new class extends Migration
             $table->string('name');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->string('activity')->nullable();
-            $table->string('affiliation')->nullable();
-            $table->integer('goal');
+            $table->foreignId('activity_id')->constrained('activities');
+            $table->integer('goal_amount');
             $table->integer('participant_count');
-            $table->string('code')->unique();
+            $table->string('code');
             $table->boolean('paid_out')->default(false);
-            $table->string('city');
-            $table->string('state');
             $table->string('postal_code');
             $table->timestamps();
         });

@@ -1,6 +1,9 @@
+import { InertiaProps } from '@/types'
+import { Dialog, Transition } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import { usePage } from '@inertiajs/inertia-react'
-import exp from 'constants'
 
+import { Fragment, useState } from 'react'
 import { FunctionComponent, ReactNode } from 'react'
 
 import Footer from '@/Components/Footer'
@@ -8,15 +11,20 @@ import Navbar from '@/Components/Navbar'
 
 type Props = {
   children: ReactNode
+  enableFooter?: boolean
+  enableNavbar?: boolean
 }
 
-const AppLayout: FunctionComponent<Props> = ({ children }) => {
-  const { auth } = usePage().props
+const AppLayout: FunctionComponent<Props> = ({
+  children,
+  enableFooter = true,
+}) => {
+  const { auth } = usePage().props as unknown as InertiaProps
   return (
     <>
-      <Navbar />
+      <Navbar user={auth.user} />
       <main>{children}</main>
-      <Footer />
+      {enableFooter && <Footer />}
     </>
   )
 }

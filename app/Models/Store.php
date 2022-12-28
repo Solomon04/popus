@@ -84,7 +84,7 @@ class Store extends Model
         $current = $this->orders()->sum('total') / PHP_ROUND_HALF_DOWN;
 
         return [
-            'goal' => $this->fundraiser->goal,
+            'goal_amount' => $this->fundraiser->goal_amount,
             'current' => $current,
         ];
     }

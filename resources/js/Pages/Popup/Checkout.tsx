@@ -223,7 +223,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                       <Input
                         value={email}
                         id='email'
-                        title='email'
+                        label='email'
                         onChange={(e) => setEmail(e.target.value)}
                         type='email'
                         required={true}
@@ -234,7 +234,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                       <Input
                         value={phone}
                         id='phone'
-                        title='phone'
+                        label='phone'
                         onChange={handlePhoneNumberChange}
                         type='tel'
                         required={true}
@@ -251,7 +251,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={firstName}
                           id='first-name'
-                          title='First Name'
+                          label='First Name'
                           onChange={(e) => setFirstName(e.target.value)}
                           type='text'
                           required={true}
@@ -261,7 +261,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={lastName}
                           id='last-name'
-                          title='Last Name'
+                          label='Last Name'
                           onChange={(e) => setLastName(e.target.value)}
                           type='text'
                           required={true}
@@ -271,7 +271,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={address}
                           id='address'
-                          title='Address'
+                          label='Address'
                           onChange={(e) => setAddress(e.target.value)}
                           type='text'
                           // autoComplete='street-address'
@@ -282,7 +282,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={unit}
                           id='unit'
-                          title='Apartment / Suite / Unit'
+                          label='Apartment / Suite / Unit'
                           onChange={(e) => setUnit(e.target.value)}
                           type='text'
                         />
@@ -292,7 +292,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={city}
                           id='city'
-                          title='City'
+                          label='City'
                           onChange={(e) => setCity(e.target.value)}
                           type='text'
                           // autoComplete='city-name'
@@ -303,7 +303,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={state}
                           id='state'
-                          title='state'
+                          label='state'
                           onChange={(e) => setState(e.target.value)}
                           type='text'
                           // autoComplete='state-name'
@@ -314,7 +314,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
                         <Input
                           value={postal}
                           id='postal'
-                          title='Postal Code'
+                          label='Postal Code'
                           onChange={(e) => setPostal(e.target.value)}
                           type='text'
                           // autoComplete='postal-code'

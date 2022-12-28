@@ -1,5 +1,6 @@
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { PlayCircleIcon } from '@heroicons/react/24/solid'
+import route from 'ziggy-js'
 
 import { FunctionComponent } from 'react'
 
@@ -30,29 +31,23 @@ const Footer: FunctionComponent = () => {
               <li>
                 <a
                   className='text-gray-700 transition hover:text-gray-700/75'
-                  href='/'>
+                  href='/about'>
                   About
                 </a>
               </li>
               <li>
                 <a
                   className='text-gray-700 transition hover:text-gray-700/75'
-                  href='/'>
+                  target='_blank'
+                  href='https://popus-rochester.com/'>
                   Shop
                 </a>
               </li>
               <li>
                 <a
                   className='text-gray-700 transition hover:text-gray-700/75'
-                  href='/'>
+                  href={route('create.fundraiser')}>
                   Fundraise
-                </a>
-              </li>
-              <li>
-                <a
-                  className='text-gray-700 transition hover:text-gray-700/75'
-                  href='/'>
-                  Blog
                 </a>
               </li>
             </ul>
@@ -104,29 +99,29 @@ const Footer: FunctionComponent = () => {
           <p className='mt-12 text-center text-sm text-gray-500 lg:text-right'>
             © Popus Gives 2022. All rights reserved.
           </p>
-          <ul className='flex flex-wrap justify-center gap-6 md:gap-8 lg:justify-end lg:gap-12 text-sm'>
-            <li>
-              <a
-                className='text-gray-700 transition hover:text-gray-700/75'
-                href='/'>
-                Terms
-              </a>
-            </li>
-            <li>
-              <a
-                className='text-gray-700 transition hover:text-gray-700/75'
-                href='/'>
-                Privacy
-              </a>
-            </li>
-            <li>
-              <a
-                className='text-gray-700 transition hover:text-gray-700/75'
-                href='/'>
-                Cookies
-              </a>
-            </li>
-          </ul>
+          {/*<ul className='flex flex-wrap justify-center gap-6 md:gap-8 lg:justify-end lg:gap-12 text-sm'>*/}
+          {/*  <li>*/}
+          {/*    <a*/}
+          {/*      className='text-gray-700 transition hover:text-gray-700/75'*/}
+          {/*      href='/'>*/}
+          {/*      Terms*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*  <li>*/}
+          {/*    <a*/}
+          {/*      className='text-gray-700 transition hover:text-gray-700/75'*/}
+          {/*      href='/'>*/}
+          {/*      Privacy*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*  <li>*/}
+          {/*    <a*/}
+          {/*      className='text-gray-700 transition hover:text-gray-700/75'*/}
+          {/*      href='/'>*/}
+          {/*      Cookies*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*</ul>*/}
         </div>
       </div>
     </footer>

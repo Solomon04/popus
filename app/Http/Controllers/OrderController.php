@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Helpers\Money;
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Rate;
 use App\Models\Store;
+use App\Notifications\CustomerOrderNotification;
+use App\Notifications\FundraiserOrderNotification;
+use App\Notifications\PopupStoreOrderNotification;
 use Artesaos\SEOTools\SEOTools;
 use Inertia\Inertia;
 use Signifly\Shopify\Shopify;
@@ -30,10 +36,6 @@ class OrderController extends Controller
             'store_id' => $store->id,
         ]);
 
-        $subtotal = $cart->items->sum(function ($item) {
-            return $item->quantity * $item->product->price;
-        });
-
         try {
             /** @var array $rate */
             $rate = \Shippo_Rate::retrieve($request->input('rate'));
@@ -41,26 +43,23 @@ class OrderController extends Controller
             return back()->with('error', 'failure');
         }
 
+        $subtotal = $cart->items->sum(function ($item) {
+            return $item->quantity * $item->product->price;
+        });
         $shippingTotal = $rate['amount'];
         $taxTotal = ($shippingTotal + $subtotal) * 0.0725;
 
         $total = round($subtotal + $taxTotal + $shippingTotal, 2);
 
+        /** @var Customer $customer */
         $customer = $cart->customer()->updateOrCreate(['email' => $request->input('email')], [
             'email' => $request->input('email'),
-            'name' => $request->input('first_name').' '.$request->input('last_name'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
             'phone' => $request->input('phone'),
         ]);
-
-        /** @var PaymentMethod $paymentMethod */
-        $paymentMethod = $this->stripeClient->paymentMethods->create([
-            'type' => 'card',
-            'card' => [
-                'token' => $request->input('stripe_token'),
-            ],
-        ]);
-
-        $cart->address()->create([
+        /** @var Address $address */
+        $address = $cart->address()->create([
             'address' => $request->input('address'),
             'unit' => $request->input('unit'),
             'city' => $request->input('city'),
@@ -70,8 +69,8 @@ class OrderController extends Controller
             'first_name' => $request->input('first_name'),
             'country' => 'USA',
         ]);
-
-        $cart->rate()->create([
+        /** @var Rate $rate */
+        $rate = $cart->rate()->create([
             'shippo_id' => $rate['object_id'],
             'provider' => $rate['provider'],
             'name' => $rate['servicelevel']['name'],
@@ -79,6 +78,14 @@ class OrderController extends Controller
             'days' => $rate['estimated_days'],
             'image' => $rate['provider_image_200'],
             'description' => $rate['duration_terms'],
+        ]);
+
+        /** @var PaymentMethod $paymentMethod */
+        $paymentMethod = $this->stripeClient->paymentMethods->create([
+            'type' => 'card',
+            'card' => [
+                'token' => $request->input('stripe_token'),
+            ],
         ]);
 
         /** @var Card $card */
@@ -168,10 +175,10 @@ class OrderController extends Controller
                 'country' => 'USA',
             ],
             'billing_address' => [
-                'address1' => $request->input('address'),
-                'city' => $request->input('city'),
-                'province' => $request->input('state'),
-                'zip' => $request->input('postal'),
+                'address1' => $address->address,
+                'city' => $address->city,
+                'province' => $address->state,
+                'zip' => $address->postal,
                 'last_name' => $request->input('last_name'),
                 'first_name' => $request->input('first_name'),
                 'country' => 'USA',
@@ -184,13 +191,17 @@ class OrderController extends Controller
 
         $cart->update(['active' => false]);
 
+        $store->user->notify(new PopupStoreOrderNotification($order));
+        $store->fundraiser->organizer->notify(new FundraiserOrderNotification($order));
+        $customer->notify(new CustomerOrderNotification($order));
+
         return redirect()->route('show.order', ['store' => $store, 'order' => $order]);
     }
 
     public function show(Store $store, Order $order)
     {
-        $this->seo->setTitle('Receipt - Popus Gives');
-        $this->seo->opengraph()->setTitle('Receipt - Popus Gives');
+        $this->seo->setTitle('Order Summary - Popus Gives');
+        $this->seo->opengraph()->setTitle('Order Summary - Popus Gives');
 
         $order->load(['customer',
             'cart' => [

@@ -13,6 +13,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.7",
+        "lorisleiva/laravel-actions": "^2.4",
         "nunomaduro/larastan": "^2.3",
         "shippo/shippo-php": "^2.0",
         "signifly/laravel-shopify": "^1.2",

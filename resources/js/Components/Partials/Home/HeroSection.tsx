@@ -34,7 +34,7 @@ const HeroSection: FunctionComponent = () => {
               type='button'
               className='bg-gradient-to-r from-rose-600 via-orange-600 to-pink-500'
               processing={false}>
-              <Link href={route('get.started')}>Get Started</Link>
+              <Link href={route('create.fundraiser')}>Get Started</Link>
             </Button>
             <Button
               type='button'

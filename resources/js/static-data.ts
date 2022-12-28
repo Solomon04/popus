@@ -304,3 +304,5 @@ export const paymentMethods = [
   { id: 'paypal', title: 'PayPal' },
   { id: 'etransfer', title: 'eTransfer' },
 ]
+
+export const activities = [{ name: 'Arts & Culture' }]

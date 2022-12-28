@@ -10,3 +10,13 @@ export type ShippingRate = {
   image: string
   description: string
 }
+
+export type InertiaProps = {
+  auth: {
+    user: App.Models.User | null
+  }
+  flash: {
+    message?: string
+    error?: string
+  }
+}

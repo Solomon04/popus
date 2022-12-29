@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FundraiserStatus;
 use App\Models\Activity;
 use App\Models\Fundraiser;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -84,6 +86,75 @@ class FundraiserController extends Controller
                 'total_orders' => $fundraiser->total_orders,
             ],
             'leaderboard' => $leaderboard,
+            'activities' => Activity::all(),
+            'active' => $fundraiser->status === FundraiserStatus::IN_PROGRESS,
+            'past' => $fundraiser->status === FundraiserStatus::ENDED,
+            'shared_url' => URL::signedRoute('join.fundraiser', ['fundraiser' => $fundraiser]),
         ]);
+    }
+
+    public function update(Fundraiser $fundraiser, Request $request)
+    {
+        $this->validate($request, [
+            'organization_name' => ['string', 'max:255'],
+            'activity_id' => ['exists:activities,id'],
+            'start_date' => ['date'],
+            'postal_code' => ['required'],
+            'participant_count' => ['numeric'],
+            'goal_amount' => ['numeric'],
+        ]);
+
+        if ($fundraiser->status === FundraiserStatus::ENDED) {
+            return redirect()->route('show.fundraiser', ['fundraiser' => $fundraiser]);
+        }
+
+        if ($request->has('organization_name')) {
+            $fundraiser->update(['name' => $request->input('organization_name')]);
+        }
+
+        if ($request->has('activity_id')) {
+            $fundraiser->update(['activity_id' => $request->input('activity_id')]);
+        }
+
+        if ($request->has('postal_code')) {
+            $fundraiser->update(['postal_code' => $request->input('postal_code')]);
+        }
+
+        if ($request->has('postal_code')) {
+            $fundraiser->update(['postal_code' => $request->input('postal_code')]);
+        }
+
+        if ($request->has('participant_count') && ! $fundraiser->is_active) {
+            $fundraiser->update(['participant_count' => $request->input('participant_count')]);
+        }
+
+        if ($request->has('start_date') && ! $fundraiser->is_active) {
+            $startDate = Carbon::parse($request->input('start_date'));
+            $fundraiser->update([
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $startDate->addWeek()->toDateString(),
+            ]);
+        }
+
+        if ($request->has('goal_amount') && ! $fundraiser->is_active) {
+            $fundraiser->update(['participant_count' => $request->input('participant_count')]);
+        }
+
+        return back()->with('success', 'Your fundraiser has been updated.');
+    }
+
+    public function destroy(Fundraiser $fundraiser)
+    {
+        if ($fundraiser->status === FundraiserStatus::IN_PROGRESS) {
+            $fundraiser->update([
+                'end_date' => now(),
+            ]);
+
+            return redirect()->route('fundraisers');
+        }
+
+        $fundraiser->delete();
+
+        return redirect()->route('fundraisers');
     }
 }

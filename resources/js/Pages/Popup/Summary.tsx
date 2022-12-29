@@ -1,9 +1,11 @@
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import dayjs from 'dayjs'
 
 import { FunctionComponent } from 'react'
 
 import OrderSummary from '@/Components/Partials/Summary/OrderSummary'
 
+import AppLayout from '@/Layouts/AppLayout'
 import PopupStoreLayout from '@/Layouts/PopupStoreLayout'
 
 type Props = {
@@ -13,7 +15,7 @@ type Props = {
 
 const Summary: FunctionComponent<Props> = ({ store, order }) => {
   return (
-    <PopupStoreLayout store={store}>
+    <AppLayout>
       <div className='bg-gray-50'>
         <div className='mx-auto max-w-3xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8'>
           <div className='lg:grid lg:grid-cols-5 lg:gap-x-12 xl:gap-x-16'>
@@ -47,9 +49,7 @@ const Summary: FunctionComponent<Props> = ({ store, order }) => {
                     <div className='pt-1 pb-3'>
                       <p className='mb-1 text-lg font-bold'>Order Confirmed</p>
                       <p className='mb-2 text-gray-900 font-medium'>
-                        {new Date(
-                          order.created_at as string
-                        ).toLocaleDateString()}
+                        {dayjs(order.created_at).format('L')}
                       </p>
                       <p className='text-gray-700'>
                         We have received your order and will ship soon!
@@ -91,7 +91,7 @@ const Summary: FunctionComponent<Props> = ({ store, order }) => {
           </div>
         </div>
       </div>
-    </PopupStoreLayout>
+    </AppLayout>
   )
 }
 

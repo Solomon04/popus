@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Helpers\Money;
-use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\CreateOrderRequest;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -28,7 +28,7 @@ class OrderController extends Controller
     {
     }
 
-    public function store(StoreOrderRequest $request, Store $store)
+    public function store(CreateOrderRequest $request, Store $store)
     {
         /** @var Cart $cart */
         $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [

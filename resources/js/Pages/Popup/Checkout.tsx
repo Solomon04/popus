@@ -24,6 +24,7 @@ import Input from '@/Components/Form/Input'
 import CheckoutSummary from '@/Components/Partials/Checkout/CheckoutSummary'
 import Steps from '@/Components/Steps'
 
+import AppLayout from '@/Layouts/AppLayout'
 import PopupStoreLayout from '@/Layouts/PopupStoreLayout'
 
 type Props = {
@@ -175,7 +176,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
   }
 
   return (
-    <PopupStoreLayout store={store} loading={loading}>
+    <AppLayout loading={loading}>
       <div className='bg-offwhite'>
         <div className='mx-auto max-w-3xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8'>
           <div className='mb-5'>
@@ -470,7 +471,7 @@ const Checkout: FunctionComponent<Props> = ({ store, cart, rates }) => {
           </div>
         </div>
       </div>
-    </PopupStoreLayout>
+    </AppLayout>
   )
 }
 

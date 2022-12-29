@@ -62,3 +62,10 @@ export const formatPhoneNumberWhileTyping = (
     return `(${areaCode}`
   }
 }
+
+export const formatDate = (date: string) => {
+  const utcDate = new Date(date) //Date object a day behind
+  return new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split('T')[0]
+}

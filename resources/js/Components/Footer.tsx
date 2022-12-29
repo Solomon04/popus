@@ -19,7 +19,7 @@ const Footer: FunctionComponent = () => {
         <div className='lg:flex lg:items-end lg:justify-between'>
           <div>
             <div className='flex justify-center text-teal-600 lg:justify-start'>
-              <img src='/images/popus-dark.jpg' alt='logo' className='h-8' />
+              <img src='/popus-text-logo.png' alt='logo' className='h-8' />
             </div>
             <p className='mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left'>
               A delicious way to raise funds for your school, team or non-profit

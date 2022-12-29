@@ -11,41 +11,34 @@ type Props = {
   label: string
   name?: string
   value?: string | ReadonlyArray<string> | number | undefined
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void
   type: HTMLInputTypeAttribute
   placeholder?: string | undefined
   required?: boolean
   className?: string
   min?: string | number | undefined
-  max?: string | number | undefined
   maxLength?: number | undefined
+  minLength?: number | undefined
   disabled?: boolean | undefined
   defaultValue?: string | number | ReadonlyArray<string> | undefined
+  rows?: number | undefined
 }
 
 // The Input component
-const Input: FunctionComponent<Props> = ({
+const Textarea: FunctionComponent<Props> = ({
   value,
   onChange,
-  type = 'text',
   label,
   placeholder,
   id,
   required = false,
   name,
-  max,
-  min,
+  minLength,
   maxLength,
   disabled = false,
   defaultValue,
+  rows = 12,
 }) => {
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    console.log(e.target.value)
-    return e.target.value
-  }
-
   const input = useRef<HTMLInputElement>()
 
   useEffect(() => {
@@ -57,25 +50,24 @@ const Input: FunctionComponent<Props> = ({
   return (
     <label
       htmlFor={id}
-      className={`text-xs sm:text-base relative block overflow-hidden rounded-input border border-gray-200 px-3 pt-3 shadow-sm focus-within:border-gray-500 focus-within:ring-1 focus-within:ring-gray-500 bg-white ${
+      className={`text-xs sm:text-base relative block overflow-hidden rounded-input border border-gray-200 px-3 pt-6 shadow-sm focus-within:border-gray-500 focus-within:ring-1 focus-within:ring-gray-500 bg-white ${
         disabled && 'bg-gray-200 cursor-not-allowed'
       }`}>
-      <input
-        className={`text-xs sm:text-base peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm ${
+      <textarea
+        className={`text-xs sm:text-sm peer h-24 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm ${
           disabled && 'cursor-not-allowed'
         }`}
-        type={type}
         id={id}
         name={name}
         required={required}
         onChange={onChange}
         value={value}
         placeholder={placeholder ?? label}
-        min={min}
-        max={max}
         maxLength={maxLength}
+        minLength={minLength}
         disabled={disabled}
         defaultValue={defaultValue}
+        rows={rows}
       />
       <span className='absolute left-3 top-2 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-xs capitalize'>
         {label.toString()}
@@ -85,4 +77,4 @@ const Input: FunctionComponent<Props> = ({
   )
 }
 
-export default Input
+export default Textarea

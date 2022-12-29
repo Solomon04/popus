@@ -18,8 +18,8 @@ return new class extends Migration
             $table->uuid();
             $table->foreignId('organizer_id')->constrained('users');
             $table->string('name');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->foreignId('activity_id')->constrained('activities');
             $table->integer('goal_amount');
             $table->integer('participant_count');

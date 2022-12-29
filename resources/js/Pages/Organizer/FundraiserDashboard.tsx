@@ -84,7 +84,7 @@ const FundraiserDashboard: FunctionComponent<Props> = ({
 
     return (
       <span className='inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800'>
-        Ended {dayjs(fundraiser.end_date).toNow(true)}
+        Ended {dayjs(fundraiser.end_date).toNow(true)} ago
       </span>
     )
   }
@@ -160,13 +160,8 @@ const FundraiserDashboard: FunctionComponent<Props> = ({
                           aria-hidden='true'
                         />
                         <p>
-                          <span>
-                            {new Date(
-                              fundraiser.start_date
-                            ).toLocaleDateString()}{' '}
-                            -{' '}
-                            {new Date(fundraiser.end_date).toLocaleDateString()}
-                          </span>
+                          {dayjs(fundraiser.start_date).format('L')} -{' '}
+                          {dayjs(fundraiser.end_date).format('L')}
                         </p>
                       </div>
                     </div>

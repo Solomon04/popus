@@ -82,7 +82,7 @@ const LivePopupStoresSection: FunctionComponent<Props> = ({ stores }) => {
                 <div className='w-64 mx-auto border-2 bg-white rounded-md shadow-xl'>
                   <div className='aspect-w-12 aspect-h-12'>
                     <img
-                      src={store.user?.avatar as string}
+                      src={store.avatar}
                       className='pointer-events-none object-cover'
                       alt={`${store.user?.first_name} image`}
                     />

@@ -2,16 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FundraiserStatus;
+use App\Helpers\Base64;
+use App\Http\Requests\CreateStoreRequest;
 use App\Models\Cart;
+use App\Models\Fundraiser;
 use App\Models\Product;
 use App\Models\Store;
 use Artesaos\SEOTools\SEOTools;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PopupStoreController extends Controller
 {
     public function __construct(protected SEOTools $seo)
     {
+    }
+
+    public function index()
+    {
+        $user = $this->getCurrentUser();
+
+        $stores = $user->stores()->with(['fundraiser'])->withCount(['orders'])->get();
+
+        return Inertia::render('Popup/StoreDashboard', [
+            'stores' => $stores,
+        ]);
     }
 
     public function show(Store $store)
@@ -37,10 +55,69 @@ class PopupStoreController extends Controller
 
         $products = Product::active()->take(6)->get();
 
-        return Inertia::render('Popup/Store', [
+        return Inertia::render('Popup/StoreDetail', [
             'products' => $products,
             'store' => $store,
             'cart' => $cart,
         ]);
+    }
+
+    public function create(Fundraiser $fundraiser, Request $request)
+    {
+        $user = $this->getCurrentUser();
+        if (! $request->hasValidSignature()) {
+            return redirect()->route('stores');
+        }
+
+        if ($fundraiser->status === FundraiserStatus::ENDED) {
+            return redirect()->route('stores');
+        }
+
+        if ($user && $fundraiser->stores()->where('user_id', '=', $user->id)->exists()) {
+            return redirect()->route('stores');
+        }
+
+        $fundraiser->load('organizer');
+
+        return Inertia::render('Popup/Join', [
+            'fundraiser' => $fundraiser,
+            'form_url' => URL::signedRoute('create.store', ['fundraiser' => $fundraiser]),
+        ]);
+    }
+
+    public function store(CreateStoreRequest $request, Fundraiser $fundraiser)
+    {
+        $user = $this->getCurrentUser();
+        if (! $request->hasValidSignature()) {
+            // invalid
+            dd('invalid');
+        }
+
+        if ($fundraiser->status === FundraiserStatus::ENDED) {
+            // expired
+            dd('expired');
+        }
+
+        if ($fundraiser->stores()->where('user_id', '=', $user->id)->exists()) {
+            // already apart of fundraiser
+            dd('already exist');
+        }
+
+        $imageName = Str::uuid().'.'.Base64::getImageType($request->input('avatar'));
+
+        /** @var Store $store */
+        $store = $fundraiser->stores()->create([
+            'user_id' => $user->id,
+            'avatar' => '',
+            'description' => $request->input('description'),
+        ]);
+
+        $avatar = $store->addMediaFromBase64($request->input('avatar'))
+            ->setFileName($imageName)
+            ->toMediaCollection('avatars')->getFullUrl();
+
+        $store->update(['avatar' => $avatar]);
+
+        return redirect()->route('popup.store', ['store' => $store]);
     }
 }

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->uuid();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('fundraiser_id')->constrained('fundraisers');
-            $table->mediumText('description')->nullable();
+            $table->string('avatar');
+            $table->mediumText('description');
             $table->timestamps();
         });
     }

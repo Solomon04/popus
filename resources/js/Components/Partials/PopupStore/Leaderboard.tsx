@@ -31,7 +31,7 @@ const Leaderboard: FunctionComponent<Props> = ({ leaderboard }) => {
                 <div className='flex-shrink-0'>
                   <img
                     className='h-8 w-8 rounded-full'
-                    src={store.user?.avatar as string}
+                    src={store.avatar}
                     alt={store.user?.first_name}
                   />
                 </div>
@@ -72,7 +72,7 @@ const Leaderboard: FunctionComponent<Props> = ({ leaderboard }) => {
                 <div className='flex-shrink-0'>
                   <img
                     className='h-16 w-16 rounded-full'
-                    src={store.user?.avatar as string}
+                    src={store.avatar}
                     alt={store.user?.first_name}
                   />
                 </div>

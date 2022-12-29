@@ -22,15 +22,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StaticPageController::class, 'index'])->name('home');
 Route::get('about', [StaticPageController::class, 'about'])->name('about');
-Route::inertia('/fundraiser', 'Organizer/FundraiserDetail');
-Route::inertia('/dashboard', 'Organizer/Dashboard')->name('fundraiser.dashboard');
 
 Route::middleware('auth')->group(function () {
     // Disable auth middleware to allow organizer to login directly from the fundraiser creation form
     Route::get('fundraiser/create', [FundraiserController::class, 'create'])->withoutMiddleware('auth')->name('create.fundraiser');
     Route::get('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'show'])->name('show.fundraiser');
-    Route::post('fundraiser', [FundraiserController::class, 'store'])->name('store.fundraiser');
+    Route::delete('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'destroy'])->name('cancel.fundraiser');
+    Route::patch('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'update'])->name('update.fundraiser');
+    Route::post('fundraisers', [FundraiserController::class, 'store'])->name('store.fundraiser');
     Route::get('fundraisers', [FundraiserController::class, 'index'])->name('fundraisers');
+
+    // Disable auth middleware to allow participant to login directly from the join fundraiser form
+    Route::get('fundraiser/{fundraiser:uuid}/join', [PopupStoreController::class, 'create'])->withoutMiddleware('auth')->name('join.fundraiser');
+    Route::post('fundraiser/{fundraiser:uuid}/join', [PopupStoreController::class, 'store'])->name('create.store');
+    Route::get('stores', [PopupStoreController::class, 'index'])->name('stores');
 });
 
 Route::get('s/{store:uuid}', [PopupStoreController::class, 'show'])->name('popup.store');

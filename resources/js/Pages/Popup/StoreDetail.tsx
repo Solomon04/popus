@@ -1,6 +1,8 @@
 import { supporters } from '@/static-data'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import { Inertia } from '@inertiajs/inertia'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import route from 'ziggy-js'
 
 import { FunctionComponent, useMemo, useState } from 'react'
@@ -11,15 +13,17 @@ import Leaderboard from '@/Components/Partials/PopupStore/Leaderboard'
 import ProductList from '@/Components/Partials/PopupStore/ProductList'
 import Supporters from '@/Components/Partials/PopupStore/Supporters'
 
+import AppLayout from '@/Layouts/AppLayout'
 import PopupStoreLayout from '@/Layouts/PopupStoreLayout'
 
+dayjs.extend(localizedFormat)
 type Props = {
   products: App.Models.Product[]
   store: App.Models.Store
   cart: App.Models.Cart
 }
 
-const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
+const StoreDetail: FunctionComponent<Props> = ({ products, store, cart }) => {
   const [loading, setLoading] = useState(false)
   const addToCart = (product: App.Models.Product, quantity: number) => {
     Inertia.post(
@@ -55,7 +59,7 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
   }
 
   return (
-    <PopupStoreLayout store={store} loading={loading}>
+    <AppLayout loading={loading}>
       <div className='max-w-7xl mx-auto py-4'>
         {!store.is_active && (
           <div className='rounded-md bg-red-50 p-4'>
@@ -69,7 +73,14 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
               <div className='ml-3'>
                 <div className='text-sm text-red-700'>
                   <p>
-                    This popup store's fundraiser ended is no longer available.
+                    This store is only available from{' '}
+                    <strong>
+                      {dayjs(store.fundraiser?.start_date).format('L')}
+                    </strong>{' '}
+                    -{' '}
+                    <strong>
+                      {dayjs(store.fundraiser?.end_date).format('L')}
+                    </strong>
                   </p>
                 </div>
               </div>
@@ -99,8 +110,8 @@ const Store: FunctionComponent<Props> = ({ products, store, cart }) => {
           store_uuid={store.uuid}
         />
       ) : null}
-    </PopupStoreLayout>
+    </AppLayout>
   )
 }
 
-export default Store
+export default StoreDetail

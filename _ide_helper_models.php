@@ -170,9 +170,11 @@ namespace App\Models{
  * @property string $postal_code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Activity $activity
  * @property-read float $earnings
  * @property float|int $goal
+ * @property-read mixed $is_active
  * @property-read \App\Models\Store[]|\Illuminate\Database\Eloquent\Collection|mixed $leaderboard
  * @property-read float $revenue
  * @property-read mixed $status
@@ -184,10 +186,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser future()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Fundraiser onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser query()
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereEndDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereGoalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereId($value)
@@ -199,6 +203,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUuid($value)
+ * @method static \Illuminate\Database\Query\Builder|Fundraiser withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Fundraiser withoutTrashed()
  */
 	class Fundraiser extends \Eloquent {}
 }
@@ -380,7 +386,8 @@ namespace App\Models{
  * @property string $uuid
  * @property int $user_id
  * @property int $fundraiser_id
- * @property string|null $description
+ * @property string $avatar
+ * @property string $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Fundraiser $fundraiser
@@ -393,6 +400,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Store newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Store newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Store query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Store whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereFundraiserId($value)
@@ -413,7 +421,6 @@ namespace App\Models{
  * @property string $last_name
  * @property string $email
  * @property string $phone
- * @property string|null $avatar
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
@@ -432,7 +439,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)

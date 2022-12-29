@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Fundraiser extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Bootstrap the model and its traits.
@@ -25,6 +26,10 @@ class Fundraiser extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->uuid = Str::uuid();
+        });
+
+        static::deleting(function ($fundraiser) { // before delete() method call this
+        $fundraiser->stores()->delete();
         });
     }
 
@@ -60,8 +65,6 @@ class Fundraiser extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
         'paid_out' => 'boolean',
     ];
 
@@ -93,12 +96,12 @@ class Fundraiser extends Model
     public function scopeFuture(Builder $query): Builder
     {
         return $query->where('start_date', '>', now()->toDateString())
-            ->where('end_date', '>', now()->toDateString());
+            ->where('end_date', '>=', now()->toDateString());
     }
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('start_date', '<', now()->toDateString())
+        return $query->where('start_date', '<=', now()->toDateString())
             ->where('end_date', '>', now()->toDateString());
     }
 
@@ -168,5 +171,10 @@ class Fundraiser extends Model
         return $this->stores->sum(function (Store $store) {
             return $store->orders()->count();
         });
+    }
+
+    public function getIsActiveAttribute()
+    {
+        return $this->status === FundraiserStatus::IN_PROGRESS;
     }
 }

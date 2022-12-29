@@ -16,7 +16,7 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
       <div className='md:order-2'>
         <div className='aspect-w-12 aspect-h-12'>
           <img
-            src={store.user?.avatar as string}
+            src={store.avatar}
             className='object-cover shadow sm:rounded-md'
             alt={store.user?.first_name}
           />
@@ -28,9 +28,7 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
           {store.user?.first_name}'s Pop-Up Store
         </h1>
         <p className='mb-5 leading-relaxed text-gray-900 md:text-xl'>
-          Hey! Its that time of year! Your favorite JM player is asking for your
-          support! Our fundraiser this fall is Popus popcorn! Thanks for your
-          support!
+          {store.description}
         </p>
         <p className='mb-8 leading-relaxed text-gray-900 md:text-xl'>
           50% of each purchase benefits this fundraiser.
@@ -46,7 +44,7 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
             ${parseInt(store.progress.current)}
           </div>
         </div>
-        <div className='flex items-center justify-between'>
+        <div className='sm:flex items-center justify-between'>
           <h3 className='text-gray-700'>
             <span className='text-2xl font-semibold text-gray-900'>
               <CountUp
@@ -60,9 +58,10 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
             </span>{' '}
             sold of ${store.progress.goal_amount} goal
           </h3>
-          <h3 className='text-gray-700'>
-            ends {dayjs(store.fundraiser?.end_date).fromNow()}
-          </h3>
+          {/*{store.fundraiser && <Badge fundraiser={store.fundraiser} />}*/}
+          {/*<h3 className='text-gray-700 mt-5 sm:mt-0'>*/}
+          {/*  ends {dayjs(store.fundraiser?.end_date).fromNow()}*/}
+          {/*</h3>*/}
         </div>
       </div>
     </div>

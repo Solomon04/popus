@@ -84,6 +84,7 @@ declare namespace App.Models {
     postal_code: string
     created_at: string | null
     updated_at: string | null
+    deleted_at: string | null
     organizer?: App.Models.User | null
     stores?: Array<App.Models.Store> | null
     activity?: App.Models.Activity | null
@@ -93,6 +94,7 @@ declare namespace App.Models {
     readonly revenue?: number
     readonly earnings?: number
     readonly total_orders?: number
+    readonly is_active?: any
   }
 
   export interface Order {
@@ -175,7 +177,8 @@ declare namespace App.Models {
     uuid: string
     user_id: number
     fundraiser_id: number
-    description: string | null
+    avatar: string
+    description: string
     created_at: string | null
     updated_at: string | null
     user?: App.Models.User | null
@@ -193,7 +196,6 @@ declare namespace App.Models {
     last_name: string
     email: string
     phone: string
-    avatar: string | null
     email_verified_at: string | null
     password: string
     remember_token: string | null

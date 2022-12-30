@@ -34,6 +34,7 @@ class PopupStoreController extends Controller
 
     public function show(Store $store)
     {
+        $user = $this->getCurrentUser();
         $title = "{$store->user->first_name}'s Pop-Up Store";
         $description = 'Click here to buy gourmet popcorn and 50% of your purchase benefits the fundraiser.';
         $this->seo->setTitle($title);
@@ -59,6 +60,9 @@ class PopupStoreController extends Controller
             'products' => $products,
             'store' => $store,
             'cart' => $cart,
+            'status' => $store->fundraiser->status->name,
+            'can_edit' => $store->user()->is($user) && in_array($store->fundraiser->status, [FundraiserStatus::IN_PROGRESS, FundraiserStatus::UPCOMING]),
+            'can_buy' => $store->fundraiser->status === FundraiserStatus::IN_PROGRESS,
         ]);
     }
 

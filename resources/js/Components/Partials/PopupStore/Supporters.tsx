@@ -31,7 +31,7 @@ const Supporters: FunctionComponent<Props> = ({ supporters }) => {
               <div className='flex items-center justify-between space-x-4'>
                 <div>
                   <h3 className='font-medium text-lg'>
-                    {supporter.customer?.name}
+                    {supporter.customer?.first_name}
                   </h3>
                   <p className='text-gray-600 text-sm'>
                     {dayjs(supporter.created_at).fromNow()} -{' '}
@@ -39,7 +39,7 @@ const Supporters: FunctionComponent<Props> = ({ supporters }) => {
                     {supporter.cart?.address?.state}
                   </p>
                 </div>
-                <h3 className='font-medium text-lg'>${supporter.total}</h3>
+                <h3 className='font-medium text-lg'>${supporter.sub_total}</h3>
               </div>
             </li>
           ))}
@@ -65,7 +65,7 @@ const Supporters: FunctionComponent<Props> = ({ supporters }) => {
               <div className='flex items-center justify-between space-x-4'>
                 <div>
                   <h3 className='font-medium text-lg'>
-                    {supporter.customer?.name}
+                    {supporter.customer?.first_name}
                   </h3>
                   <p className='text-gray-600 text-sm'>
                     {dayjs(supporter.created_at).fromNow()} -{' '}
@@ -73,7 +73,7 @@ const Supporters: FunctionComponent<Props> = ({ supporters }) => {
                     {supporter.cart?.address?.state}
                   </p>
                 </div>
-                <h3 className='font-medium text-lg'>${supporter.total}</h3>
+                <h3 className='font-medium text-lg'>${supporter.sub_total}</h3>
               </div>
             </li>
           ))}

@@ -155,7 +155,7 @@ class Fundraiser extends Model
     public function getRevenueAttribute(): float
     {
         $revenue = $this->stores->sum(function (Store $store) {
-            return $store->orders()->sum('total');
+            return $store->orders()->sum('sub_total');
         });
 
         return round($revenue, 2);

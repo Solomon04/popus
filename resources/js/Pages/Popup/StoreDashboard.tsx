@@ -11,6 +11,7 @@ import { Link, usePage } from '@inertiajs/inertia-react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import route from 'ziggy-js'
 
 import { FunctionComponent, useState } from 'react'
 
@@ -74,7 +75,7 @@ const StoreDashboard: FunctionComponent<Props> = ({ stores }) => {
         </div>
         <div className='md:px-4 md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 space-y-4 md:space-y-0'>
           {stores.map((store) => (
-            <a onClick={() => console.log('foo')} type='button'>
+            <Link href={route('popup.store', [store.uuid])}>
               <div className='max-w-sm bg-white px-6 pt-6 pb-2 rounded-xl shadow-lg transform hover:scale-105 transition duration-500'>
                 <div className='relative'>
                   <img
@@ -130,7 +131,7 @@ const StoreDashboard: FunctionComponent<Props> = ({ stores }) => {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

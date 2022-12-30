@@ -1,6 +1,8 @@
 import { supporters } from '@/static-data'
+import { InertiaProps } from '@/types'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import { Inertia } from '@inertiajs/inertia'
+import { usePage } from '@inertiajs/inertia-react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import route from 'ziggy-js'
@@ -21,10 +23,18 @@ type Props = {
   products: App.Models.Product[]
   store: App.Models.Store
   cart: App.Models.Cart
+  can_edit: boolean
 }
 
-const StoreDetail: FunctionComponent<Props> = ({ products, store, cart }) => {
+const StoreDetail: FunctionComponent<Props> = ({
+  products,
+  store,
+  cart,
+  can_edit,
+}) => {
   const [loading, setLoading] = useState(false)
+  const { auth } = usePage().props as unknown as InertiaProps
+
   const addToCart = (product: App.Models.Product, quantity: number) => {
     Inertia.post(
       route('add.to.cart', [store.uuid]),
@@ -39,6 +49,10 @@ const StoreDetail: FunctionComponent<Props> = ({ products, store, cart }) => {
       }
     )
   }
+
+  const [canEdit] = useMemo(() => {
+    return [auth.user?.id === store.user?.id]
+  }, [auth.user])
 
   const [isBuyable] = useMemo(() => {
     return [cart.items && store.is_active]
@@ -88,7 +102,7 @@ const StoreDetail: FunctionComponent<Props> = ({ products, store, cart }) => {
           </div>
         )}
         {/* Profile Jumbotron */}
-        <Jumbotron store={store} />
+        <Jumbotron store={store} canEdit={canEdit} />
         <div className='grid grid-cols-1 rounded-md md:grid-cols-3 md:gap-8 md:p-12'>
           {/* Product List */}
           <ProductList onAdd={addToCart} products={products} active={true} />

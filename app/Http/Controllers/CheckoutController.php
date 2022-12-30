@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Shipping;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Store;
@@ -51,16 +52,22 @@ class CheckoutController extends Controller
             'store_id' => $store->id,
         ]);
 
-        $parcels = $cart->items->map(function (CartItem $cartItem) {
-            return [
-                'length' => 8,
-                'width' => 8,
-                'height' => 8,
-                'distance_unit' => 'in',
-                'weight' => 20,
-                'mass_unit' => 'lb',
-            ];
+        $weight = $cart->items->sum(function (CartItem $cartItem) {
+            return $cartItem->product->weight * $cartItem->quantity;
         });
+
+        $totalItems = $cart->items->sum(function (CartItem $cartItem) {
+            return $cartItem->quantity;
+        });
+
+        $parcel = [
+            'length' => $totalItems > 3 ? Shipping::LARGE_BOX_DIMENSIONS : Shipping::REGULAR_BOX_DIMENSIONS,
+            'width' => $totalItems > 3 ? Shipping::LARGE_BOX_DIMENSIONS : Shipping::REGULAR_BOX_DIMENSIONS,
+            'height' => $totalItems > 3 ? Shipping::LARGE_BOX_DIMENSIONS : Shipping::REGULAR_BOX_DIMENSIONS,
+            'distance_unit' => 'in',
+            'weight' => $weight,
+            'mass_unit' => 'lb',
+        ];
 
         $shipment = Shippo_Shipment::create([
             'address_from' => config('shippo.address_from'),
@@ -74,7 +81,7 @@ class CheckoutController extends Controller
                 'country' => 'US',
                 'email' => $request->input('email'),
             ],
-            'parcels' => $parcels->toArray(),
+            'parcels' => $parcel,
             'async' => false,
         ]);
 

@@ -85,7 +85,7 @@ class Store extends Model implements HasMedia
      */
     public function getProgressAttribute()
     {
-        $current = $this->orders()->sum('total') / PHP_ROUND_HALF_DOWN;
+        $current = $this->orders()->sum('sub_total') / PHP_ROUND_HALF_DOWN;
 
         return [
             'goal_amount' => $this->fundraiser->goal_amount,

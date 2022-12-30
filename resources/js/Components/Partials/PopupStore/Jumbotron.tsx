@@ -1,3 +1,4 @@
+import { PencilSquareIcon } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -8,9 +9,10 @@ dayjs.extend(relativeTime)
 
 type Props = {
   store: App.Models.Store
+  canEdit: boolean
 }
 
-const Jumbotron: FunctionComponent<Props> = ({ store }) => {
+const Jumbotron: FunctionComponent<Props> = ({ store, canEdit = false }) => {
   return (
     <div className='grid grid-cols-1 rounded-md bg-gray-50 md:grid-cols-3 md:gap-5 md:p-12'>
       <div className='md:order-2'>
@@ -23,10 +25,24 @@ const Jumbotron: FunctionComponent<Props> = ({ store }) => {
         </div>
       </div>
       <div className='col-span-2 p-5 md:order-1 md:p-0'>
-        <h3 className='text-gray-600 md:text-xl'>{store.fundraiser?.name}</h3>
-        <h1 className='mb-3 text-3xl font-semibold text-gray-900 md:mb-8 md:text-4xl lg:text-5xl'>
-          {store.user?.first_name}'s Pop-Up Store
-        </h1>
+        <div className='flex items-start justify-between'>
+          <div>
+            <h3 className='text-gray-600 md:text-xl'>
+              {store.fundraiser?.name}
+            </h3>
+            <h1 className='mb-3 text-3xl font-semibold text-gray-900 md:mb-8 md:text-4xl lg:text-5xl'>
+              {store.user?.first_name}'s Pop-Up Store
+            </h1>
+          </div>
+
+          {canEdit && (
+            <button className='flex items-center justify-center bg-gray-900 hover:bg-gray-800 focus:ring-2 ring-gray-500 py-2 px-2 rounded-md text-white'>
+              Edit
+              <PencilSquareIcon className='ml-1 w-5 h-5' />
+            </button>
+          )}
+        </div>
+
         <p className='mb-5 leading-relaxed text-gray-900 md:text-xl'>
           {store.description}
         </p>

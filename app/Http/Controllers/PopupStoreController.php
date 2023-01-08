@@ -54,7 +54,7 @@ class PopupStoreController extends Controller
             'store_id' => $store->id,
         ]);
 
-        $products = Product::active()->take(6)->get();
+        $products = Product::active()->take(8)->get();
 
         return Inertia::render('Popup/StoreDetail', [
             'products' => $products,

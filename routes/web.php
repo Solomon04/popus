@@ -6,6 +6,8 @@ use App\Http\Controllers\FundraiserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PopupStoreController;
 use App\Http\Controllers\StaticPageController;
+use App\Http\Controllers\StripeConnectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
@@ -22,11 +24,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StaticPageController::class, 'index'])->name('home');
 Route::get('about', [StaticPageController::class, 'about'])->name('about');
+Route::get('stripe/connect/{token}', [StripeConnectController::class, 'store'])->name('save.bank');
 
 Route::middleware('auth')->group(function () {
     // Disable auth middleware to allow organizer to login directly from the fundraiser creation form
     Route::get('fundraiser/create', [FundraiserController::class, 'create'])->withoutMiddleware('auth')->name('create.fundraiser');
     Route::get('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'show'])->name('show.fundraiser');
+    Route::get('stripe/{fundraiser:uuid}/connect', [StripeConnectController::class, 'show'])->name('connect.bank');
     Route::delete('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'destroy'])->name('cancel.fundraiser');
     Route::patch('fundraiser/{fundraiser:uuid}', [FundraiserController::class, 'update'])->name('update.fundraiser');
     Route::post('fundraisers', [FundraiserController::class, 'store'])->name('store.fundraiser');
@@ -36,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::get('fundraiser/{fundraiser:uuid}/join', [PopupStoreController::class, 'create'])->withoutMiddleware('auth')->name('join.fundraiser');
     Route::post('fundraiser/{fundraiser:uuid}/join', [PopupStoreController::class, 'store'])->name('create.store');
     Route::get('stores', [PopupStoreController::class, 'index'])->name('stores');
+
+    Route::post('user/update', [UserController::class, 'update'])->name('update.user');
 });
 
 Route::get('s/{store:uuid}', [PopupStoreController::class, 'show'])->name('popup.store');

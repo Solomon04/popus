@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -50,6 +51,8 @@ class Fundraiser extends Model
         'code',
         'paid_out',
         'postal_code',
+        'stripe_express_id',
+        'stripe_express_connected',
     ];
 
     /**
@@ -60,12 +63,20 @@ class Fundraiser extends Model
     protected $with = ['activity'];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['start_time_iso8601', 'end_time_iso8601'];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
     protected $casts = [
         'paid_out' => 'boolean',
+        'stripe_express_connected' => 'boolean',
     ];
 
     /**
@@ -91,6 +102,11 @@ class Fundraiser extends Model
     public function activity(): BelongsTo
     {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function payout(): HasOne
+    {
+        return $this->hasOne(Payout::class);
     }
 
     public function scopeFuture(Builder $query): Builder
@@ -128,8 +144,8 @@ class Fundraiser extends Model
 
     public function getStatusAttribute()
     {
-        $start = Carbon::parse($this->start_date);
-        $end = Carbon::parse($this->end_date);
+        $start = Carbon::parse($this->start_time_iso8601);
+        $end = Carbon::parse($this->end_time_iso8601);
 
         if ($start->isPast() && $end->isPast()) {
             return FundraiserStatus::ENDED;
@@ -140,6 +156,20 @@ class Fundraiser extends Model
         }
 
         return FundraiserStatus::UPCOMING;
+    }
+
+    public function getStartTimeIso8601Attribute()
+    {
+        $start = Carbon::parse($this->start_date);
+
+        return $start->setTimezone('America/Los_Angeles')->setHour(0)->setMinute(0)->toIso8601String();
+    }
+
+    public function getEndTimeIso8601Attribute()
+    {
+        $end = Carbon::parse($this->end_date);
+
+        return $end->setTimezone('America/Los_Angeles')->setHour(11)->setMinute(59)->toIso8601String();
     }
 
     /**

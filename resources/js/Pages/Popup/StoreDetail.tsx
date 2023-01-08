@@ -89,11 +89,15 @@ const StoreDetail: FunctionComponent<Props> = ({
                   <p>
                     This store is only available from{' '}
                     <strong>
-                      {dayjs(store.fundraiser?.start_date).format('L')}
+                      {new Date(
+                        store.fundraiser?.start_time_iso8601
+                      ).toLocaleDateString()}
                     </strong>{' '}
                     -{' '}
                     <strong>
-                      {dayjs(store.fundraiser?.end_date).format('L')}
+                      {new Date(
+                        store.fundraiser?.end_time_iso8601
+                      ).toLocaleDateString()}
                     </strong>
                   </p>
                 </div>
@@ -105,7 +109,11 @@ const StoreDetail: FunctionComponent<Props> = ({
         <Jumbotron store={store} canEdit={canEdit} />
         <div className='grid grid-cols-1 rounded-md md:grid-cols-3 md:gap-8 md:p-12'>
           {/* Product List */}
-          <ProductList onAdd={addToCart} products={products} active={true} />
+          <ProductList
+            onAdd={addToCart}
+            products={products}
+            active={store.is_active}
+          />
 
           <div className='col-span-1 p-5 md:p-0'>
             {/* Leaderboard List + Leaderboard Slideover */}

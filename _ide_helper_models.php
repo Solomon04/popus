@@ -171,15 +171,20 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string $stripe_express_id
+ * @property bool $stripe_express_connected
  * @property-read \App\Models\Activity $activity
  * @property-read float $earnings
+ * @property-read mixed $end_time_iso8601
  * @property float|int $goal
  * @property-read mixed $is_active
  * @property-read \App\Models\Store[]|\Illuminate\Database\Eloquent\Collection|mixed $leaderboard
  * @property-read float $revenue
+ * @property-read mixed $start_time_iso8601
  * @property-read mixed $status
  * @property-read int $total_orders
  * @property-read \App\Models\User $organizer
+ * @property-read \App\Models\Payout|null $payout
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Store[] $stores
  * @property-read int|null $stores_count
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser active()
@@ -201,6 +206,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereParticipantCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereStripeExpressConnected($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereStripeExpressId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Fundraiser whereUuid($value)
  * @method static \Illuminate\Database\Query\Builder|Fundraiser withTrashed()
@@ -312,6 +319,32 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Payout
+ *
+ * @property int $id
+ * @property int $fundraiser_id
+ * @property string $stripe_transfer_id
+ * @property int $amount
+ * @property string $reversed_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Fundraiser $fundraiser
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereFundraiserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereReversedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereStripeTransferId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Payout whereUpdatedAt($value)
+ */
+	class Payout extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Product
  *
  * @property int $id
@@ -394,6 +427,8 @@ namespace App\Models{
  * @property-read bool $is_active
  * @property-read \App\Models\Store[]|\Illuminate\Database\Eloquent\Collection|mixed $leaderboard
  * @property-read float[]|int[] $progress
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection|\Spatie\MediaLibrary\MediaCollections\Models\Media[] $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
  * @property-read int|null $orders_count
  * @property-read \App\Models\User $user
@@ -409,7 +444,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereUuid($value)
  */
-	class Store extends \Eloquent {}
+	class Store extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{

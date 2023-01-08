@@ -2,12 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\Order;
+use App\Helpers\Money;
+use App\Models\Payout;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Stripe\LoginLink;
 
-class FundraiserOrderNotification extends Notification
+class PayoutInitiatedNotification extends Notification
 {
     use Queueable;
 
@@ -16,7 +18,7 @@ class FundraiserOrderNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public Order $order)
+    public function __construct(public Payout $payout, public LoginLink $loginLink)
     {
         //
     }
@@ -40,10 +42,14 @@ class FundraiserOrderNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $message = 'We have sent a payment of $'.Money::centsToDollars($this->payout->amount).' to your bank account.';
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->bcc(config('mail.cc'))
+            ->subject('Hey its pay day! 💰')
+            ->line($message)
+            ->action('View My Payouts', $this->loginLink->url)
+            ->line('Thank you for using Popus Gives!');
     }
 
     /**

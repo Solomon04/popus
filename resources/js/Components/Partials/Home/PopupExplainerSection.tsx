@@ -133,7 +133,7 @@ const PopupExplainerSection: FunctionComponent = () => {
           <div className='pt-1 pb-8'>
             <p className='mb-2 font-semibold'>3. SHARE YOUR POP-UP STORE</p>
             <p className='text-gray-100 text-sm'>
-              Once the Event starts you’ll have up to 4 days to share your
+              Once the Event starts you’ll have up to 7 days to share your
               personal Pop-Up Store link with friends and family through text
               messaging, social media and email.
             </p>

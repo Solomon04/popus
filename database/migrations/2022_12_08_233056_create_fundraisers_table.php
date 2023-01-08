@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('fundraisers', function (Blueprint $table) {
             $table->id();
-            $table->uuid();
+            $table->uuid('uuid');
             $table->foreignId('organizer_id')->constrained('users');
             $table->string('name');
             $table->date('start_date');

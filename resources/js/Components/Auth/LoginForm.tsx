@@ -38,9 +38,19 @@ const LoginForm: FunctionComponent<Props> = ({ showRegister }) => {
         <h2 className='text-3xl font-bold sm:text-4xl mb-3'>
           Login into account
         </h2>
-        <p className='my-4 text-gray-600'>
-          In order to create a fundraiser, we need you to login to your account.
-        </p>
+        <div>
+          <p className='my-4 text-gray-600'>
+            In order to create a fundraiser, we need you to login to your
+            account.
+          </p>
+          <button
+            type='button'
+            className='text-sm text-sky-500 hover:underline'
+            onClick={showRegister}>
+            Click here if you don't have an account.
+          </button>
+        </div>
+
         <div className='mt-3'>
           <Input
             id='email'
@@ -74,13 +84,6 @@ const LoginForm: FunctionComponent<Props> = ({ showRegister }) => {
             processing={false}>
             Login
           </Button>
-
-          <button
-            type='button'
-            className='text-sm text-sky-500 hover:underline'
-            onClick={showRegister}>
-            Don't have an account?
-          </button>
         </div>
       </div>
     </form>

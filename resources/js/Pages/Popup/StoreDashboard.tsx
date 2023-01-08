@@ -78,13 +78,16 @@ const StoreDashboard: FunctionComponent<Props> = ({ stores }) => {
             <Link href={route('popup.store', [store.uuid])}>
               <div className='max-w-sm bg-white px-6 pt-6 pb-2 rounded-xl shadow-lg transform hover:scale-105 transition duration-500'>
                 <div className='relative'>
-                  <img
-                    className='w-full rounded-xl'
-                    src={store.avatar}
-                    alt={store.user?.first_name}
-                  />
+                  <div className='aspect-w-12 aspect-h-12'>
+                    <img
+                      src={store.avatar}
+                      className='object-cover shadow sm:rounded-md'
+                      alt={store.user?.first_name}
+                    />
+                  </div>
                   {store.fundraiser && <Badge fundraiser={store.fundraiser} />}
                 </div>
+
                 <h1 className='mt-4 text-gray-800 text-2xl font-bold cursor-pointer'>
                   {store.fundraiser?.name}
                 </h1>

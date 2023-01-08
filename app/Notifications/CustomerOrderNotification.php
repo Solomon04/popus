@@ -36,14 +36,19 @@ class CustomerOrderNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
+        $subject = "Thank you for supporting {$this->order->store->user->first_name}'s fundraiser! 🙏";
+        $message = "{$this->order->store->user->first_name} is grateful to receive your support. Popus Gives will be delivering your order in the next couple of weeks.";
+        $url = route('show.order', ['store' => $this->order->store, 'order' => $this->order]);
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->subject($subject)
+                    ->line($message)
+                    ->action('Track My Order', $url)
+                    ->line('Thank you for using our Popus Gives!');
     }
 
     /**

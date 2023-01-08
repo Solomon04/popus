@@ -115,4 +115,17 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CC'd List
+    |--------------------------------------------------------------------------
+    |
+    | Here is a list of internal emails we want to cc on outgoing emails
+    |
+    */
+    'cc' => [
+        'tines2@popus.com',
+        'solomon@icodestuff.io',
+    ],
+
 ];

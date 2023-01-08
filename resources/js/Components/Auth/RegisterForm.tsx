@@ -42,9 +42,17 @@ const RegisterForm: FunctionComponent<Props> = ({ showLogin }) => {
         <h2 className='text-3xl font-bold sm:text-4xl mb-3'>
           Create an account
         </h2>
-        <p className='my-4 text-gray-600'>
-          In order to create a fundraiser, we need you to setup an account.
-        </p>
+        <div>
+          <p className='my-4 text-gray-600'>
+            In order to create a fundraiser, we need you to setup an account.
+          </p>
+          <button
+            type='button'
+            className='text-sm text-sky-500 hover:underline'
+            onClick={showLogin}>
+            Click here if you already have an account.
+          </button>
+        </div>
 
         <div className='mt-3'>
           <Input
@@ -110,13 +118,6 @@ const RegisterForm: FunctionComponent<Props> = ({ showLogin }) => {
             processing={false}>
             Register
           </Button>
-
-          <button
-            type='button'
-            className='text-sm text-sky-500 hover:underline'
-            onClick={showLogin}>
-            Already have an account?
-          </button>
         </div>
       </div>
     </form>

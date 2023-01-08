@@ -8,7 +8,7 @@ import ProductDetail from '@/Components/Partials/PopupStore/ProductDetail'
 type Props = {
   products: App.Models.Product[]
   onAdd: (product: App.Models.Product, quantity: number) => void
-  active: boolean
+  active: boolean | undefined
 }
 
 const ProductList: FunctionComponent<Props> = ({ products, onAdd, active }) => {
@@ -37,7 +37,7 @@ const ProductList: FunctionComponent<Props> = ({ products, onAdd, active }) => {
       <h3 className='border-b border-gray-100 pb-4 text-2xl font-bold'>
         Shop Products
       </h3>
-      <div className='mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8'>
+      <div className='mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8'>
         {products.map((product, id) => (
           <div
             key={id}

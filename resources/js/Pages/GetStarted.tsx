@@ -1,6 +1,7 @@
 import { activities } from '@/static-data'
 import { InertiaProps } from '@/types'
 import { formatPhoneNumberWhileTyping } from '@/utils'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Inertia } from '@inertiajs/inertia'
 import { usePage } from '@inertiajs/inertia-react'
 import dayjs from 'dayjs'
@@ -25,11 +26,11 @@ type Props = {
 const GetStarted: FunctionComponent<Props> = ({ activities }) => {
   // Create account (if not auth: show create email / password
   const [currentStep, setCurrentStep] = useState(1)
-  const [showLogin, setShowLogin] = useState(true)
+  const [showLogin, setShowLogin] = useState(false)
   const totalSteps = 4
   const { auth } = usePage().props as unknown as InertiaProps
   const [organizationName, setOrganizationName] = useState('')
-  const [activity, setActivity] = useState('1')
+  const [activity, setActivity] = useState<undefined | string>()
   const [postalCode, setPostalCode] = useState('')
   const [startDate, setStartDate] = useState('')
   const [participantCount, setParticipantCount] = useState(1)
@@ -52,7 +53,6 @@ const GetStarted: FunctionComponent<Props> = ({ activities }) => {
 
   const [endDate] = useMemo(() => {
     const end = dayjs(startDate).add(1, 'week').format('YYYY-MM-DD')
-    console.log(end)
     return [end]
   }, [startDate])
 
@@ -65,7 +65,7 @@ const GetStarted: FunctionComponent<Props> = ({ activities }) => {
 
     Inertia.post(route('store.fundraiser'), {
       organization_name: organizationName,
-      activity_id: activity,
+      activity_id: activity as string,
       start_date: startDate,
       postal_code: postalCode,
       participant_count: participantCount,
@@ -134,7 +134,7 @@ const GetStarted: FunctionComponent<Props> = ({ activities }) => {
                         required={true}
                         value={activity}
                         onChange={(e) => {
-                          setActivity(e.target.value)
+                          setActivity(e.target.value as string)
                         }}
                       />
                     </div>
@@ -215,12 +215,22 @@ const GetStarted: FunctionComponent<Props> = ({ activities }) => {
                   </>
                 )}
 
-                <div className='mt-5'>
+                <div className='mt-5 flex items-center justify-between'>
+                  <Button
+                    onClick={() => setCurrentStep(currentStep - 1)}
+                    type='button'
+                    className='text-black border-gray-700 border-2 px-5 py-3 rounded bg-transparent'
+                    processing={currentStep === 1}>
+                    <ChevronLeftIcon className='h-4 w-4' />
+                    Back
+                  </Button>
+
                   <Button
                     type='submit'
                     className='text-white border-gray-700 border-2 px-5 py-3 rounded'
                     processing={false}>
-                    {isLastStep ? 'Submit' : 'Continue'}
+                    {isLastStep ? 'Submit' : 'Continue'}{' '}
+                    <ChevronRightIcon className='h-4 w-4' />
                   </Button>
                 </div>
               </div>

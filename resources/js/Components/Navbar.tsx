@@ -6,11 +6,14 @@ import {
   UserCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import { Inertia } from '@inertiajs/inertia'
 import { Link } from '@inertiajs/inertia-react'
 import route from 'ziggy-js'
 
 import React, { Fragment, FunctionComponent, useState } from 'react'
 
+import Button from '@/Components/Form/Button'
+import Input from '@/Components/Form/Input'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink'
 
 type Props = {
@@ -29,6 +32,67 @@ type MenuProps = {
 
 const Navbar: FunctionComponent<Props> = ({ user }) => {
   const [open, setOpen] = useState(false)
+  const [openSettingsForm, setOpenSettingsForm] = useState(false)
+
+  const SettingsForm: FunctionComponent<MenuProps> = ({ user }) => {
+    const [firstName, setFirstName] = useState(user.first_name)
+    const [lastName, setLastName] = useState(user.last_name)
+    const [processing, setProcessing] = useState(false)
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+
+      Inertia.post(
+        route('update.user'),
+        {
+          first_name: firstName,
+          last_name: lastName,
+        },
+        {
+          onFinish: () => {
+            setProcessing(false)
+            setOpenSettingsForm(false)
+          },
+          onBefore: () => setProcessing(true),
+        }
+      )
+    }
+
+    return (
+      <form className='space-y-4' onSubmit={handleSubmit}>
+        <Input
+          id='first_name'
+          label='First Name'
+          type='text'
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <Input
+          id='last_name'
+          label='Last Name'
+          type='text'
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+
+        <div className='flex items-center justify-center space-x-3'>
+          <Button
+            type='button'
+            className='w-full flex justify-center items-center bg-transparent border-gray-900 rounded-md text-black'
+            onClick={() => setOpenSettingsForm(false)}
+            processing={false}>
+            Cancel
+          </Button>
+          <Button
+            type='submit'
+            className='w-full flex justify-center items-center rounded-md'
+            processing={processing}>
+            Update
+          </Button>
+        </div>
+      </form>
+    )
+  }
 
   const Menu: FunctionComponent<MenuProps> = ({ user }) => {
     return (
@@ -46,46 +110,54 @@ const Navbar: FunctionComponent<Props> = ({ user }) => {
 
         <div className='w-full px-3'>
           <div className='flow-root'>
-            <nav
-              aria-label='Main Nav'
-              className='-my-2 flex flex-col divide-y divide-gray-100'>
-              <ul className='space-y-2'>
-                <li>
-                  <button
-                    type='button'
-                    onClick={() => console.log('change')}
-                    className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
-                    <UserCircleIcon className='w-5 h-5 mr-2' />
-                    My Settings
-                  </button>
-                </li>
-                <li>
+            {openSettingsForm ? (
+              <SettingsForm user={user} />
+            ) : (
+              <nav
+                aria-label='Main Nav'
+                className='-my-2 flex flex-col divide-y divide-gray-100'>
+                <ul className='space-y-2'>
+                  <li>
+                    <button
+                      type='button'
+                      onClick={() => setOpenSettingsForm(true)}
+                      className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
+                      <UserCircleIcon className='w-5 h-5 mr-2' />
+                      My Settings
+                    </button>
+                  </li>
+                  {user.fundraisers_count && user?.fundraisers_count > 0 ? (
+                    <li>
+                      <Link
+                        href={route('fundraisers')}
+                        className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
+                        <QueueListIcon className='w-5 h-5 mr-2' />
+                        My Fundraisers
+                      </Link>
+                    </li>
+                  ) : null}
+                  {user.stores_count && user?.stores_count > 0 ? (
+                    <li>
+                      <Link
+                        href={route('stores')}
+                        className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
+                        <ShoppingCartIcon className='w-5 h-5 mr-2' />
+                        My Stores
+                      </Link>
+                    </li>
+                  ) : null}
+                </ul>
+                <div className='py-2 mt-2'>
                   <Link
-                    href={route('fundraisers')}
-                    className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
-                    <QueueListIcon className='w-5 h-5 mr-2' />
-                    My Fundraisers
+                    method='post'
+                    href={route('logout')}
+                    as='button'
+                    className='block w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-red-500 hover:bg-gray-100 hover:text-red-600'>
+                    Log Out
                   </Link>
-                </li>
-                <li>
-                  <Link
-                    href={route('stores')}
-                    className='w-full flex items-center rounded-lg px-4 py-2 font-medium text-gray-700 bg-gray-50 hover:text-gray-600'>
-                    <ShoppingCartIcon className='w-5 h-5 mr-2' />
-                    My Stores
-                  </Link>
-                </li>
-              </ul>
-              <div className='py-2 mt-2'>
-                <Link
-                  method='post'
-                  href={route('logout')}
-                  as='button'
-                  className='block w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-red-500 hover:bg-gray-100 hover:text-red-600'>
-                  Log Out
-                </Link>
-              </div>
-            </nav>
+                </div>
+              </nav>
+            )}
           </div>
         </div>
       </>

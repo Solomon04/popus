@@ -11,9 +11,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Stripe\StripeClient;
 
 class FundraiserController extends Controller
 {
+    public function __construct(protected StripeClient $stripeClient)
+    {
+    }
+
     public function index()
     {
         $user = $this->getCurrentUser();
@@ -55,6 +60,15 @@ class FundraiserController extends Controller
 
         $startDate = Carbon::parse($request->input('start_date'));
 
+        $stripeExpressId = $this->stripeClient->accounts->create([
+            'country' => 'US',
+            'type' => 'express',
+            'capabilities' => [
+                'card_payments' => ['requested' => true],
+                'transfers' => ['requested' => true],
+            ],
+        ])->id;
+
         $fundraiser = Fundraiser::create([
             'organizer_id' => $user->id,
             'name' => $request->input('organization_name'),
@@ -65,6 +79,7 @@ class FundraiserController extends Controller
             'participant_count' => $request->input('participant_count'),
             'postal_code' => $request->input('postal_code'),
             'code' => Str::random(6),
+            'stripe_express_id' => $stripeExpressId,
         ]);
 
         return redirect()->route('show.fundraiser', ['fundraiser' => $fundraiser]);
@@ -77,6 +92,14 @@ class FundraiserController extends Controller
         $leaderboard = $fundraiser->stores->sortByDesc(function (Store $store) {
             return $store->orders()->sum('total');
         })->values();
+        $payoutDisabledReason = null;
+
+        if ($fundraiser->stripe_express_id) {
+            $stripeExpressAccount = $this->stripeClient->accounts->retrieve($fundraiser->stripe_express_id);
+            if (! $stripeExpressAccount->payouts_enabled) {
+                $payoutDisabledReason = 'We need you to verify more information in order to receives payouts via Stripe.';
+            }
+        }
 
         return Inertia::render('Organizer/FundraiserDetail', [
             'fundraiser' => $fundraiser,
@@ -90,6 +113,7 @@ class FundraiserController extends Controller
             'active' => $fundraiser->status === FundraiserStatus::IN_PROGRESS,
             'past' => $fundraiser->status === FundraiserStatus::ENDED,
             'shared_url' => URL::signedRoute('join.fundraiser', ['fundraiser' => $fundraiser]),
+            'payouts_disabled_reason' => $payoutDisabledReason,
         ]);
     }
 

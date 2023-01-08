@@ -29,6 +29,10 @@ class CheckoutController extends Controller
         $this->seo->opengraph()->setDescription($description);
         $store->load(['user']);
 
+        if (! $store->is_active) {
+            return redirect()->route('home');
+        }
+
         /** @var Cart $cart */
         $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
             'session_id' => session()->getId(),
@@ -51,6 +55,10 @@ class CheckoutController extends Controller
             'session_id' => session()->getId(),
             'store_id' => $store->id,
         ]);
+
+        if (! $store->is_active) {
+            return back();
+        }
 
         $weight = $cart->items->sum(function (CartItem $cartItem) {
             return $cartItem->product->weight * $cartItem->quantity;

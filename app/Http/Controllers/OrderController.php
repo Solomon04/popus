@@ -13,7 +13,6 @@ use App\Models\Order;
 use App\Models\Rate;
 use App\Models\Store;
 use App\Notifications\CustomerOrderNotification;
-use App\Notifications\FundraiserOrderNotification;
 use App\Notifications\PopupStoreOrderNotification;
 use Artesaos\SEOTools\SEOTools;
 use Inertia\Inertia;
@@ -192,7 +191,6 @@ class OrderController extends Controller
         $cart->update(['active' => false]);
 
         $store->user->notify(new PopupStoreOrderNotification($order));
-        $store->fundraiser->organizer->notify(new FundraiserOrderNotification($order));
         $customer->notify(new CustomerOrderNotification($order));
 
         return redirect()->route('show.order', ['store' => $store, 'order' => $order]);

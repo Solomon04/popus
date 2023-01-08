@@ -2,12 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Models\Order;
+use App\Models\Fundraiser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Stripe\AccountLink;
 
-class PopupStoreOrderNotification extends Notification
+class SetupPayoutMethodNotification extends Notification
 {
     use Queueable;
 
@@ -16,7 +17,7 @@ class PopupStoreOrderNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public Order $order)
+    public function __construct(public Fundraiser $fundraiser, public AccountLink $accountLink)
     {
         //
     }
@@ -40,15 +41,14 @@ class PopupStoreOrderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $message = "We'd like to inform you that a customer by the name of {$this->order->customer->first_name} has purchased from your popup store.";
+        $message = " Hi {$this->fundraiser->organizer->first_name}, we need you to connect your bank account so we can send your fundraiser earnings.";
 
         return (new MailMessage)
-            ->cc($this->order->store->fundraiser->organizer->email)
             ->bcc(config('mail.cc'))
-            ->subject('You have a new supporter! 🎁')
+            ->subject('Required Action for Popups Gives ‼️')
             ->line($message)
-            ->action('Track Your Progress', route('popup.store', ['store' => $this->order->store]))
-            ->line('Thank you for using our Popus Gives!');
+            ->action('Connect Bank Account', $this->accountLink->url)
+            ->line('Thank you for using Popus Gives!');
     }
 
     /**

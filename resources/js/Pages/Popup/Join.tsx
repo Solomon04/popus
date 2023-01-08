@@ -31,7 +31,7 @@ type Props = {
 
 const Join: FunctionComponent<Props> = ({ fundraiser, form_url }) => {
   const [loading, setLoading] = useState(false)
-  const [showLogin, setShowLogin] = useState(true)
+  const [showLogin, setShowLogin] = useState(false)
   const { auth } = usePage().props as unknown as InertiaProps
   const [image, setImage] = useState([])
   const [avatar, setAvatar] = useState<ImageType | undefined>()
@@ -154,7 +154,7 @@ const Join: FunctionComponent<Props> = ({ fundraiser, form_url }) => {
                                   fill='currentColor'
                                   viewBox='0 0 24 24'>
                                   <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
-                                </svg>
+                                </svg>{' '}
                               </span>
                               <button
                                 style={
@@ -164,8 +164,9 @@ const Join: FunctionComponent<Props> = ({ fundraiser, form_url }) => {
                                 onClick={onImageUpload}
                                 {...dragProps}
                                 className='ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
-                                Upload
+                                Upload an Image
                               </button>
+                              <span className='text-red-600'>*</span>
                             </>
                           )}
                         </div>
@@ -203,7 +204,7 @@ const Join: FunctionComponent<Props> = ({ fundraiser, form_url }) => {
                   <Button
                     type='submit'
                     className='text-white border-gray-700 border-2 px-5 py-3 rounded'
-                    processing={false}>
+                    processing={!description || !avatar}>
                     Join
                   </Button>
                 </div>

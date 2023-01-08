@@ -85,11 +85,15 @@ declare namespace App.Models {
     created_at: string | null
     updated_at: string | null
     deleted_at: string | null
+    stripe_express_id: string
+    stripe_express_connected: boolean
     organizer?: App.Models.User | null
     stores?: Array<App.Models.Store> | null
     activity?: App.Models.Activity | null
     stores_count?: number | null
     readonly status?: any
+    readonly start_time_iso8601?: any
+    readonly end_time_iso8601?: any
     readonly leaderboard?: any
     readonly revenue?: number
     readonly earnings?: number

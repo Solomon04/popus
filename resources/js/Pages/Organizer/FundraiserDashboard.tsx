@@ -60,31 +60,31 @@ const FundraiserDashboard: FunctionComponent<Props> = ({
   const StatusBadge: FunctionComponent<StatusProps> = ({ fundraiser }) => {
     // future
     if (
-      dayjs(fundraiser.start_date).isAfter(dayjs()) &&
-      dayjs(fundraiser.end_date).isAfter(dayjs())
+      dayjs(fundraiser.start_time_iso8601).isAfter(dayjs()) &&
+      dayjs(fundraiser.end_time_iso8601).isAfter(dayjs())
     ) {
       return (
         <span className='inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800'>
-          Starts in {dayjs(fundraiser.start_date).toNow(true)}
+          Starts in {dayjs(fundraiser.start_time_iso8601).toNow(true)}
         </span>
       )
     }
 
     // in progress
     if (
-      dayjs(fundraiser.start_date).isBefore(dayjs()) &&
-      dayjs(fundraiser.end_date).isAfter(dayjs())
+      dayjs(fundraiser.start_time_iso8601).isBefore(dayjs()) &&
+      dayjs(fundraiser.end_time_iso8601).isAfter(dayjs())
     ) {
       return (
         <span className='inline-flex items-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800'>
-          Ends in {dayjs(fundraiser.end_date).toNow(true)}
+          Ends in {dayjs(fundraiser.end_time_iso8601).toNow(true)}
         </span>
       )
     }
 
     return (
       <span className='inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800'>
-        Ended {dayjs(fundraiser.end_date).toNow(true)} ago
+        Ended {dayjs(fundraiser.end_time_iso8601).toNow(true)} ago
       </span>
     )
   }

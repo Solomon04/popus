@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Fundraiser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -15,7 +16,7 @@ class FundraiserEndedNotification extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public Fundraiser $fundraiser)
     {
         //
     }
@@ -39,10 +40,15 @@ class FundraiserEndedNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $message = "Hi {$this->fundraiser->organizer->first_name}, we want to inform you that your fundraiser has now ended. "
+            .'We will be sending a payout to your account in the next 48 hours.';
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject('Your fundraiser has ended')
+            ->bcc(config('mail.cc'))
+            ->line($message)
+            ->action('View Fundraiser', route('show.fundraiser', ['fundraiser' => $this->fundraiser]))
+            ->line('Thank you for using Popus Gives!');
     }
 
     /**

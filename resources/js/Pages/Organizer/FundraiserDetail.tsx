@@ -1,6 +1,10 @@
 import { classNames, formatDate } from '@/utils'
 import { Dialog, Menu, RadioGroup, Transition } from '@headlessui/react'
 import {
+  BanknotesIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/24/outline'
+import {
   ChevronLeftIcon,
   EllipsisVerticalIcon,
   ExclamationTriangleIcon,
@@ -53,6 +57,7 @@ type Props = {
   active: boolean
   past: boolean
   shared_url: string
+  payouts_disabled_reason: string | null
 }
 
 const FundraiserDetail: FunctionComponent<Props> = ({
@@ -63,21 +68,26 @@ const FundraiserDetail: FunctionComponent<Props> = ({
   active,
   past,
   shared_url,
+  payouts_disabled_reason,
 }) => {
   const [loading, setLoading] = useState(false)
   const [status] = useMemo(() => {
     if (
-      dayjs(fundraiser.start_date).isAfter(dayjs()) &&
-      dayjs(fundraiser.end_date).isAfter(dayjs())
+      dayjs(fundraiser.start_time_iso8601).isAfter(dayjs()) &&
+      dayjs(fundraiser.end_time_iso8601).isAfter(dayjs())
     ) {
-      return ['Event starts in ' + dayjs(fundraiser.start_date).toNow(true)]
+      return [
+        'Event starts in ' + dayjs(fundraiser.start_time_iso8601).toNow(true),
+      ]
     }
 
     if (
-      dayjs(fundraiser.start_date).isBefore(dayjs()) &&
-      dayjs(fundraiser.end_date).isAfter(dayjs())
+      dayjs(fundraiser.start_time_iso8601).isBefore(dayjs()) &&
+      dayjs(fundraiser.end_time_iso8601).isAfter(dayjs())
     ) {
-      return ['Event ends in ' + dayjs(fundraiser.end_date).fromNow(true)]
+      return [
+        'Event ends in ' + dayjs(fundraiser.end_time_iso8601).fromNow(true),
+      ]
     }
 
     return ['Event has ended']
@@ -153,7 +163,43 @@ const FundraiserDetail: FunctionComponent<Props> = ({
   }
 
   return (
-    <AppLayout loading={loading}>
+    <AppLayout loading={loading} enableFooter={false}>
+      {payouts_disabled_reason && (
+        <div className='bg-red-600'>
+          <div className='mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8'>
+            <div className='flex flex-wrap items-center justify-between'>
+              <div className='flex w-0 flex-1 items-center'>
+                <span className='flex rounded-lg bg-red-800 p-2'>
+                  <InformationCircleIcon
+                    className='h-6 w-6 text-white'
+                    aria-hidden='true'
+                  />
+                </span>
+                <p className='ml-3 truncate font-medium text-white'>
+                  <span className='md:hidden'>{payouts_disabled_reason}</span>
+                  <span className='hidden md:inline'>
+                    {payouts_disabled_reason}
+                  </span>
+                </p>
+              </div>
+              <div className='order-3 mt-2 w-full flex-shrink-0 sm:order-2 sm:mt-0 sm:w-auto'>
+                <Link
+                  href={route('connect.bank', [fundraiser.uuid])}
+                  className='flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50'>
+                  Fix Bank Information
+                </Link>
+              </div>
+              <div className='order-2 flex-shrink-0 sm:order-3 sm:ml-3'>
+                <button
+                  type='button'
+                  className='-mr-1 flex rounded-md p-2 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2'>
+                  <span className='sr-only'>Dismiss</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer />
       <div className='bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-200 via-white to-white'>
         <div className='max-w-6xl mx-auto px-6 py-16 sm:px-0'>
@@ -383,7 +429,7 @@ const FundraiserDetail: FunctionComponent<Props> = ({
                                   </button>
                                   <button
                                     type='button'
-                                    className='mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                                    className='mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
                                     onClick={() => setOpenModal(false)}
                                     ref={cancelButtonRef}>
                                     Cancel
@@ -465,7 +511,7 @@ const FundraiserDetail: FunctionComponent<Props> = ({
                   Details
                 </h2>
 
-                <ul className='mt-8 space-y-8'>
+                <ul className='my-8 space-y-8'>
                   <li className='flex items-center justify-between'>
                     <h3 className='text-gray-600 font-medium'>Start Date</h3>
                     <p className='text-gray-900 font-semibold'>
@@ -485,6 +531,31 @@ const FundraiserDetail: FunctionComponent<Props> = ({
                     </p>
                   </li>
                 </ul>
+
+                <h2 className='text-2xl font-bold leading-10 mt-1 border-b border-gray-200 pb-2'>
+                  Payouts
+                </h2>
+                <div className='w-full'>
+                  {fundraiser.stripe_express_connected ? (
+                    <Link
+                      href={route('connect.bank', [fundraiser.uuid])}
+                      className='mt-6 flex items-center justify-center rounded-md border border-transparent bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800'>
+                      View Payouts
+                    </Link>
+                  ) : (
+                    <>
+                      <p className='text-sm text-gray-600 mt-1 font-semibold'>
+                        In order to receive a payout for your fundraiser, you
+                        must connect your bank account.
+                      </p>
+                      <Link
+                        href={route('connect.bank', [fundraiser.uuid])}
+                        className='mt-6 flex items-center justify-center rounded-md border border-transparent bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800'>
+                        Connect Bank Account
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 

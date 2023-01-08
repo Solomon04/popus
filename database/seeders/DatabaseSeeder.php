@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use Stripe\StripeClient;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,6 +32,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
         ]);
 
+        $stripeExpressId = app(StripeClient::class)->accounts->create([
+            'country' => 'US',
+            'type' => 'express',
+        ])->id;
+
         $fundraiser = $admin->fundraisers()->create([
             'name' => 'John Marshall Boys Basketball',
             'start_date' => now(),
@@ -40,6 +46,7 @@ class DatabaseSeeder extends Seeder
             'participant_count' => 9,
             'code' => Str::random(6),
             'postal_code' => '55901',
+            'stripe_express_id' => $stripeExpressId,
         ]);
 
         // Update Products from Shopify API

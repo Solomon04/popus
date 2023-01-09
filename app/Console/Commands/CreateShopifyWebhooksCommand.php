@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Signifly\Shopify\Exceptions\ValidationException;
 use Signifly\Shopify\Shopify;
 
 class CreateShopifyWebhooksCommand extends Command
@@ -19,7 +20,7 @@ class CreateShopifyWebhooksCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create the required webhooks';
+    protected $description = 'Create the required Shopify Webhooks if they do not exist.';
 
     /**
      * Execute the console command.
@@ -39,12 +40,16 @@ class CreateShopifyWebhooksCommand extends Command
             ->count();
 
         if ($orderFulfilledCount === 0) {
-            $shopify->createWebhook([
-                'address' => route('shopify.webhook.order.fulfilled'),
-                'topic' => 'orders/fulfilled',
-                'format' => 'json',
-            ]);
-            $this->comment('Added Order Fulfilled Webhook.');
+            try {
+                $shopify->createWebhook([
+                    'address' => route('shopify.webhook.order.fulfilled'),
+                    'topic' => 'orders/fulfilled',
+                    'format' => 'json',
+                ]);
+                $this->comment('Added Order Fulfilled Webhook.');
+            } catch (ValidationException $exception) {
+                $this->error($exception->getMessage());
+            }
         }
 
         $orderCancelledCount = $webhooks
@@ -53,12 +58,16 @@ class CreateShopifyWebhooksCommand extends Command
             ->count();
 
         if ($orderCancelledCount === 0) {
-            $shopify->createWebhook([
-                'address' => route('shopify.webhook.order.cancelled'),
-                'topic' => 'orders/cancelled',
-                'format' => 'json',
-            ]);
-            $this->comment('Added Order Cancelled Webhook.');
+            try {
+                $shopify->createWebhook([
+                    'address' => route('shopify.webhook.order.cancelled'),
+                    'topic' => 'orders/cancelled',
+                    'format' => 'json',
+                ]);
+                $this->comment('Added Order Cancelled Webhook.');
+            } catch (ValidationException $exception) {
+                $this->error($exception->getMessage());
+            }
         }
 
         $orderDeletedCount = $webhooks
@@ -67,12 +76,16 @@ class CreateShopifyWebhooksCommand extends Command
             ->count();
 
         if ($orderDeletedCount === 0) {
-            $shopify->createWebhook([
-                'address' => route('shopify.webhook.order.deleted'),
-                'topic' => 'orders/deleted',
-                'format' => 'json',
-            ]);
-            $this->comment('Added Order Deleted Webhook.');
+            try {
+                $shopify->createWebhook([
+                    'address' => route('shopify.webhook.order.deleted'),
+                    'topic' => 'orders/deleted',
+                    'format' => 'json',
+                ]);
+                $this->comment('Added Order Deleted Webhook.');
+            } catch (ValidationException $exception) {
+                $this->error($exception->getMessage());
+            }
         }
 
         return Command::SUCCESS;

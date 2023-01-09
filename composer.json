@@ -19,8 +19,10 @@
         "nunomaduro/larastan": "^2.3",
         "shippo/shippo-php": "^2.0",
         "signifly/laravel-shopify": "^1.2",
+        "spatie/laravel-http-logger": "^1.10",
         "spatie/laravel-medialibrary": "^10.7",
         "stripe/stripe-php": "^10.1",
+        "thomasjohnkane/snooze": "^2.2",
         "tightenco/ziggy": "^1.0",
         "understand/understand-laravel": "^2.6"
     },

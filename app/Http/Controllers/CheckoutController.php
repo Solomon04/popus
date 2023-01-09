@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Shipping;
-use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Store;
 use Artesaos\SEOTools\SEOTools;
@@ -33,11 +32,7 @@ class CheckoutController extends Controller
             return redirect()->route('home');
         }
 
-        /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
-            'session_id' => session()->getId(),
-            'store_id' => $store->id,
-        ]);
+        $cart = $this->getCurrentCart($store);
 
         return Inertia::render('Popup/Checkout', [
             'store' => $store,
@@ -50,11 +45,7 @@ class CheckoutController extends Controller
     {
         Shippo::setApiKey(config('shippo.key'));
 
-        /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
-            'session_id' => session()->getId(),
-            'store_id' => $store->id,
-        ]);
+        $cart = $this->getCurrentCart($store);
 
         if (! $store->is_active) {
             return back();

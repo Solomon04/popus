@@ -2,11 +2,13 @@
 
 namespace App\Notifications;
 
+use App\Models\Fundraiser;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class FundraiserStartedNotification extends Notification
+class FundraiserStartedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -15,7 +17,7 @@ class FundraiserStartedNotification extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public Fundraiser $fundraiser)
     {
         //
     }
@@ -39,10 +41,13 @@ class FundraiserStartedNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $message = "Hi {$notifiable->first_name}, the fundraiser for {$this->fundraiser->name} has just started. ".
+            'You have 7 days to raise funds.';
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject('Your Fundraiser Has Started! ⏳')
+            ->line($message)
+            ->line('Thank you for using Popus Gives!');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FundraiserStatus;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -85,11 +86,11 @@ class Store extends Model implements HasMedia
      */
     public function getProgressAttribute()
     {
-        $current = $this->orders()->sum('sub_total') / PHP_ROUND_HALF_DOWN;
+        $total = $this->orders()->whereNotIn('status', [OrderStatus::PENDING->name, OrderStatus::REFUNDED->name])->sum('sub_total');
 
         return [
             'goal_amount' => $this->fundraiser->goal_amount,
-            'current' => $current,
+            'current' => $total / PHP_ROUND_HALF_DOWN,
         ];
     }
 

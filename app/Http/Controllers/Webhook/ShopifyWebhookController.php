@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Webhook;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Notifications\CustomerOrderNotification;
+use App\Notifications\PopupStoreOrderNotification;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
 
@@ -28,6 +30,9 @@ class ShopifyWebhookController extends Controller
         $order->payment()->update([
             'stripe_status' => $paymentIntent->status,
         ]);
+
+        $order->store->user->notify(new PopupStoreOrderNotification($order));
+        $order->customer->notify(new CustomerOrderNotification($order));
 
         return response('Successfully fulfilled an order.');
     }

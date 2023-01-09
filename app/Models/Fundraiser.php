@@ -162,14 +162,14 @@ class Fundraiser extends Model
     {
         $start = Carbon::parse($this->start_date);
 
-        return $start->setTimezone('America/Los_Angeles')->setHour(0)->setMinute(0)->toIso8601String();
+        return $start->setHour(16)->setMinute(00)->toIso8601String();
     }
 
     public function getEndTimeIso8601Attribute()
     {
         $end = Carbon::parse($this->end_date);
 
-        return $end->setTimezone('America/Los_Angeles')->setHour(11)->setMinute(59)->toIso8601String();
+        return $end->setHour(16)->setMinute(00)->toIso8601String();
     }
 
     /**

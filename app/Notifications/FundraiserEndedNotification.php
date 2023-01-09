@@ -3,11 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Fundraiser;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class FundraiserEndedNotification extends Notification
+class FundraiserEndedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -35,19 +37,17 @@ class FundraiserEndedNotification extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  User  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
-        $message = "Hi {$this->fundraiser->organizer->first_name}, we want to inform you that your fundraiser has now ended. "
-            .'We will be sending a payout to your account in the next 48 hours.';
+        $message = "Hi {$notifiable->first_name}, we want to inform you that the fundraiser for  {$this->fundraiser->name} has now ended. "
+            .'We will be sending a payout to the fundraiser organizer in the next 48 hours.';
 
         return (new MailMessage)
-            ->subject('Your fundraiser has ended')
-            ->bcc(config('mail.cc'))
+            ->subject('Your fundraiser has ended! ⌛️')
             ->line($message)
-            ->action('View Fundraiser', route('show.fundraiser', ['fundraiser' => $this->fundraiser]))
             ->line('Thank you for using Popus Gives!');
     }
 

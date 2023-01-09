@@ -4,11 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Fundraiser;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Stripe\AccountLink;
 
-class SetupPayoutMethodNotification extends Notification
+class SetupPayoutMethodNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

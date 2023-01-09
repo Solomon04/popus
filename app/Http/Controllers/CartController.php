@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
 use App\Models\Store;
 use Illuminate\Http\Request;
 
@@ -15,11 +14,7 @@ class CartController extends Controller
             'quantity' => ['numeric'],
         ]);
 
-        /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
-            'session_id' => session()->getId(),
-            'store_id' => $store->id,
-        ]);
+        $cart = $this->getCurrentCart($store);
 
         $cart->addItem($request->get('product_id'), $request->get('quantity'));
 
@@ -32,11 +27,7 @@ class CartController extends Controller
             'product_id' => ['required', 'exists:products,id'],
         ]);
 
-        /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
-            'session_id' => session()->getId(),
-            'store_id' => $store->id,
-        ]);
+        $cart = $this->getCurrentCart($store);
 
         $cart->removeItem($request->get('product_id'));
 

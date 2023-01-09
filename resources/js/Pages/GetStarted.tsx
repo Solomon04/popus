@@ -25,6 +25,7 @@ type Props = {
 
 const GetStarted: FunctionComponent<Props> = ({ activities }) => {
   // Create account (if not auth: show create email / password
+  const [loading, setLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [showLogin, setShowLogin] = useState(false)
   const totalSteps = 4
@@ -63,18 +64,25 @@ const GetStarted: FunctionComponent<Props> = ({ activities }) => {
       return setCurrentStep(currentStep + 1)
     }
 
-    Inertia.post(route('store.fundraiser'), {
-      organization_name: organizationName,
-      activity_id: activity as string,
-      start_date: startDate,
-      postal_code: postalCode,
-      participant_count: participantCount,
-      goal_amount: goalAmount,
-    })
+    Inertia.post(
+      route('store.fundraiser'),
+      {
+        organization_name: organizationName,
+        activity_id: activity as string,
+        start_date: startDate,
+        postal_code: postalCode,
+        participant_count: participantCount,
+        goal_amount: goalAmount,
+      },
+      {
+        onBefore: () => setLoading(true),
+        onFinish: () => setLoading(false),
+      }
+    )
   }
 
   return (
-    <AppLayout enableFooter={false}>
+    <AppLayout enableFooter={false} loading={loading}>
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 mb-32'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-16'>
           <div className='hidden md:block relative h-64 rounded-lg sm:h-80 lg:order-last lg:h-full'>

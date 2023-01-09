@@ -12,8 +12,6 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Rate;
 use App\Models\Store;
-use App\Notifications\CustomerOrderNotification;
-use App\Notifications\PopupStoreOrderNotification;
 use Artesaos\SEOTools\SEOTools;
 use Inertia\Inertia;
 use Signifly\Shopify\Shopify;
@@ -30,10 +28,7 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request, Store $store)
     {
         /** @var Cart $cart */
-        $cart = Cart::with(['items.product', 'store.user', 'address', 'customer'])->firstOrCreate(['session_id' => session()->getId(), 'store_id' => $store->id, 'active' => true], [
-            'session_id' => session()->getId(),
-            'store_id' => $store->id,
-        ]);
+        $cart = $this->getCurrentCart($store);
 
         try {
             /** @var array $rate */
@@ -189,9 +184,6 @@ class OrderController extends Controller
         ]);
 
         $cart->update(['active' => false]);
-
-        $store->user->notify(new PopupStoreOrderNotification($order));
-        $customer->notify(new CustomerOrderNotification($order));
 
         return redirect()->route('show.order', ['store' => $store, 'order' => $order]);
     }

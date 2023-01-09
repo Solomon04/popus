@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\FundraiserStatus;
+use App\Jobs\CancelFundraiserReminders;
+use App\Jobs\UpdateFundraiserReminders;
 use App\Models\Activity;
 use App\Models\Fundraiser;
 use App\Models\Store;
+use App\Notifications\FundraiserEndedNotification;
+use App\Notifications\FundraiserStartedNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -25,9 +29,11 @@ class FundraiserController extends Controller
         $fundraisers = Fundraiser::withCount(['stores'])->where('organizer_id', '=', $user->id)->get();
         $fundraisers->append(['total_orders', 'earnings', 'revenue']);
 
+        $canCreate = $fundraisers->whereIn('status', [FundraiserStatus::IN_PROGRESS, FundraiserStatus::UPCOMING])->count() === 0;
+
         return Inertia::render('Organizer/FundraiserDashboard', [
             'fundraisers' => $fundraisers,
-            'can_create_fundraiser' => $user->fundraisers()->scopes(['future'])->doesntExist() || $user->fundraisers()->scopes(['active'])->doesntExist(),
+            'can_create_fundraiser' => $canCreate,
         ]);
     }
 
@@ -80,6 +86,20 @@ class FundraiserController extends Controller
             'postal_code' => $request->input('postal_code'),
             'code' => Str::random(6),
             'stripe_express_id' => $stripeExpressId,
+        ]);
+
+        $start = Carbon::parse($fundraiser->start_date);
+        if ($start->isFuture()) {
+            $fundraiser->organizer->notifyAt(new FundraiserStartedNotification($fundraiser), $start->toDateTime(), [
+                'fundraiser' => $fundraiser->uuid,
+                'type' => FundraiserStartedNotification::class,
+            ]);
+        }
+
+        $end = Carbon::parse($fundraiser->end_date);
+        $fundraiser->organizer->notifyAt(new FundraiserEndedNotification($fundraiser), $end->toDateTime(), [
+            'fundraiser' => $fundraiser->uuid,
+            'type' => FundraiserEndedNotification::class,
         ]);
 
         return redirect()->route('show.fundraiser', ['fundraiser' => $fundraiser]);
@@ -158,6 +178,7 @@ class FundraiserController extends Controller
                 'start_date' => $startDate->toDateString(),
                 'end_date' => $startDate->addWeek()->toDateString(),
             ]);
+            $this->dispatch(new UpdateFundraiserReminders($fundraiser));
         }
 
         if ($request->has('goal_amount') && ! $fundraiser->is_active) {
@@ -177,6 +198,7 @@ class FundraiserController extends Controller
             return redirect()->route('fundraisers');
         }
 
+        $this->dispatch(new CancelFundraiserReminders($fundraiser));
         $fundraiser->delete();
 
         return redirect()->route('fundraisers');

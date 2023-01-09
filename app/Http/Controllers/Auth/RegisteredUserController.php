@@ -41,11 +41,11 @@ class RegisteredUserController extends Controller
             'redirect_url' => ['url'],
         ]);
 
-        [$firstName, $lastName] = explode(' ', $request->input('name'));
+        $names = explode(' ', $request->input('name'));
 
         $user = User::create([
-            'first_name' => $firstName,
-            'last_name' => $lastName,
+            'first_name' => $names[0],
+            'last_name' => $names[1] ?? '',
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),

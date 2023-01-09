@@ -9,7 +9,10 @@ use App\Models\Cart;
 use App\Models\Fundraiser;
 use App\Models\Product;
 use App\Models\Store;
+use App\Notifications\FundraiserEndedNotification;
+use App\Notifications\FundraiserStartedNotification;
 use Artesaos\SEOTools\SEOTools;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -39,11 +42,11 @@ class PopupStoreController extends Controller
         $description = 'Click here to buy gourmet popcorn and 50% of your purchase benefits the fundraiser.';
         $this->seo->setTitle($title);
         $this->seo->setDescription($description);
-        $this->seo->addImages([asset('images/goodrun-seo-image.jpg')]);
+        $this->seo->addImages([$store->avatar]);
         $this->seo->opengraph()->setTitle($title);
         $this->seo->opengraph()->setDescription($description);
         $this->seo->opengraph()->setUrl(route('popup.store', ['store' => $store]));
-        $this->seo->opengraph()->addImages([asset('images/goodrun-seo-image.jpg')]);
+        $this->seo->opengraph()->addImages([$store->avatar]);
 
         $store->load(['user', 'fundraiser', 'orders.customer', 'orders.cart.address']);
         $store->append(['leaderboard']);
@@ -122,6 +125,25 @@ class PopupStoreController extends Controller
 
         $store->update(['avatar' => $avatar]);
 
+        $start = Carbon::parse($store->fundraiser->start_time_iso8601);
+        if ($start->isFuture()) {
+            $store->user->notifyAt(new FundraiserStartedNotification($store->fundraiser), $start, [
+                'fundraiser' => $store->fundraiser->uuid,
+                'type' => FundraiserStartedNotification::class,
+            ]);
+        }
+
+        $end = Carbon::parse($store->fundraiser->end_time_iso8601);
+        $store->user->notifyAt(new FundraiserEndedNotification($store->fundraiser), $end, [
+            'fundraiser' => $store->fundraiser->uuid,
+            'type' => FundraiserEndedNotification::class,
+        ]);
+
         return redirect()->route('popup.store', ['store' => $store]);
+    }
+
+    public function update()
+    {
+        // todo: add edit functionality to popup store
     }
 }

@@ -7,14 +7,14 @@ use Illuminate\Console\Command;
 use Signifly\Shopify\REST\Resources\ProductResource;
 use Signifly\Shopify\Shopify;
 
-class UpdateProductsCommand extends Command
+class UploadShopifyProductsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:update-products';
+    protected $signature = 'app:shopify-upload-products';
 
     /**
      * The console command description.

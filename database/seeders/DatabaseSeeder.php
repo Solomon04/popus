@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Update Products from Shopify API
-        Artisan::call('app:update-products');
+        Artisan::call('app:shopify-upload-products');
 
         $users = collect(json_decode(file_get_contents(database_path('data/popup-stores.json')), true));
         $users->each(function ($u) use ($fundraiser) {
